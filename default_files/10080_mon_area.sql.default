@@ -1,0 +1,42 @@
+-- settings
+select @period := concat(date(now() - interval 10140 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 10140 minute)) DIV 3600) * 3600));
+select @stop :=  concat(date(now() - interval 60 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 60 minute)) DIV 3600) * 3600));
+select @rpl  := 10080;
+
+-- process data
+insert ignore into stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,verifiedReEnc,verifiedWild,encSecLeft,wildSecLeft,resetMon,re_encSecLeft,numWiEnc,numSpWi,numSpEnc,numCeWi,numCeEnc,secWiEnc,secSpWi,secSpEnc,secCeWi,secCeEnc,iv100)
+select
+@period,
+@rpl,
+area,
+fence,
+sum(totMon),
+sum(ivMon),
+sum(verifiedEnc),
+sum(verifiedReEnc),
+sum(verifiedWild),
+sum(encSecLeft),
+sum(wildSecLeft),
+sum(resetMon),
+sum(re_encSecLeft),
+sum(numWiEnc),
+sum(numSpWi),
+sum(numSpEnc),
+sum(numCeWi),
+sum(numCeEnc),
+sum(secWiEnc),
+sum(secSpWi),
+sum(secSpEnc),
+sum(secCeWi),
+sum(secCeEnc),
+sum(iv100)
+
+from stats_mon_area
+
+where
+datetime >= @period and
+datetime < @stop and
+rpl = 1440
+
+group by area,fence
+;

@@ -1,0 +1,79 @@
+SET SESSION innodb_strict_mode=OFF;
+
+
+CREATE TABLE IF NOT EXISTS `version` (
+  `key` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `version` smallint(6) NOT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `geofences` (
+  `area` varchar(40) NOT NULL,
+  `fence` varchar(40) DEFAULT `Area`,
+  `type` enum('mon', 'quest'),
+  `coords` text NOT NULL,
+  `st` polygon,
+  `created` datetime NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`area`,`fence`,`type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `stats_mon_area` (
+  `datetime` datetime NOT NULL,
+  `rpl` smallint(6) NOT NULL,
+  `area` varchar(40) NOT NULL,
+  `fence` varchar(40) DEFAULT NULL,
+  `totMon` int(11) DEFAULT NULL,
+  `ivMon` int(11) DEFAULT NULL,
+  `verifiedEnc` int(11) DEFAULT NULL,
+  `verifiedReEnc` int(11) DEFAULT NULL,
+  `verifiedWild` int(11) DEFAULT NULL,
+  `encSecLeft` int(11) DEFAULT NULL,
+  `wildSecLeft` int(11) DEFAULT NULL,
+  `resetMon` int(11) DEFAULT NULL,
+  `re_encSecLeft` int(11) DEFAULT NULL,
+  `numWiEnc` int(11) DEFAULT NULL,
+  `numSpWi` int(11) DEFAULT NULL,
+  `numSpEnc` int(11) DEFAULT NULL,
+  `numCeWi` int(11) DEFAULT NULL,
+  `numCeEnc` int(11) DEFAULT NULL,
+  `secWiEnc` int(11) DEFAULT NULL,
+  `secSpWi` int(11) DEFAULT NULL,
+  `secSpEnc` int(11) DEFAULT NULL,
+  `secCeWi` int(11) DEFAULT NULL,
+  `secCeEnc` int(11) DEFAULT NULL,
+  `iv100` int(11) DEFAULT NULL,
+  PRIMARY KEY (`datetime`,`rpl`,`area`,`fence`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `stats_spawnpoint` (
+  `datetime` datetime NOT NULL,
+  `rpl` smallint(6) NOT NULL,
+  `area` varchar(40) NOT NULL,
+  `fence` varchar(40) DEFAULT NULL,
+  `spawnpoints` int(11) DEFAULT NULL,
+  `verified` int(11) DEFAULT NULL,
+  `seen` int(11) DEFAULT NULL,
+  `1d` int(11) DEFAULT NULL,
+  `3d` int(11) DEFAULT NULL,
+  `5d` int(11) DEFAULT NULL,
+  `7d` int(11) DEFAULT NULL,
+  `14d` int(11) DEFAULT NULL,
+  PRIMARY KEY (`datetime`,`rpl`,`area`,`fence`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `stats_quest_area` (
+  `datetime` datetime NOT NULL,
+  `rpl` smallint(6) NOT NULL,
+  `area` varchar(40) NOT NULL,
+  `fence` varchar(40) DEFAULT NULL,
+  `stops` int(11) DEFAULT NULL,
+  `AR` int(11) DEFAULT NULL,
+  `nonAR` int(11) DEFAULT NULL,
+  `ARcum` int(11) DEFAULT NULL,
+  `nonARcum` int(11) DEFAULT NULL,
+  PRIMARY KEY (`datetime`,`rpl`,`area`,`fence`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- update db version
+INSERT IGNORE INTO version values ('rdmstats',1);
+UPDATE version set version = 1 where version.key = 'rdmstats';

@@ -1,0 +1,21 @@
+## Database settings ##
+sqluser=dkmur
+sqlpass=dkmur123
+dbip=127.0.0.1
+dbport=3306
+scannerdb=rdmdb
+rdmstatsdb=rdmstats
+
+## Grafana datasource
+datasource_rdmstats=rdmstats				#grafana datsource name for rdmstatsdb
+
+## Stats processing
+monareastats=true					# make sure to add mon geofences to rdmstats table geofences. First and last coordinate of column coords must be the same. 
+questareastats=true					# make sure to add quest geofences to rdmstats table geofences. First and last coordinate of column coords must be the same.
+
+## Table cleanup, remove anything older the x days
+pokemon_history=1
+area_rpl15=90
+area_rpl60=180
+area_rpl1440=365
+area_rpl10080=99999
