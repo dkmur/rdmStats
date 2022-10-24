@@ -1,6 +1,6 @@
 # rdmStats
 
-at the time of writing this nothing has been tested so WIP is an understatement :p
+
 
 tbd:
 - add grafana templates. As they aren't added yet when executing settings.run errors will show when creating grafana templates. Ignore those for now
@@ -31,6 +31,9 @@ insert ignore into geofences (area,type,coords) values
 - first and last coordinate must be the same for column coords
 - after changing or adding fences always execute setting.run to populate column st
 ```
+<BR>
+Nore 1: grafana templates will group before first `_` meaning for instance in the example above when looking at stats for area Newyork without specifying a fence the 2 mon areas will be combined
+Note 2: mon area stats are delayed by one hour compared to quest/spawnpoint and (non existent) worker stats
 
 ## 3 Grafana
 - Install Grafana, more details can be found at https://grafana.com/docs/grafana/latest/installation/debian/#install-from-apt-repository or if you prefer to use docker <https://hub.docker.com/r/grafana/grafana>

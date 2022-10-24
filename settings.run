@@ -56,8 +56,8 @@ for i in "$folder"/grafana/*.json.default ;do
   mv $i ${i%%.default}
 done
 DS_RDMSTATS="${datasource_rdmstats^^}"
-cd $folder/grafana/ && sed -i "s/rdmstats/$datasource_rdmstats/g" *.json
-cd $folder/grafana/ && sed -i "s/RDMSTATS/$DS_RDMSTATS/g" *.json
+cd $folder/grafana/ && sed -i "s/RDM_Stats/$datasource_rdmstats/g" *.json
+cd $folder/grafana/ && sed -i "s/RDM_STATS/$DS_RDMSTATS/g" *.json
 
 
 echo ""
