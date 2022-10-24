@@ -3,7 +3,7 @@
 
 
 tbd:
-- add grafana templates. As they aren't added yet when executing settings.run errors will show when creating grafana templates. Ignore those for now
+- ~~add grafana templates. As they aren't added yet when executing settings.run errors will show when creating grafana templates. Ignore those for now~~
 - add worker stats when available in rdm
 - once worker stats have been added it will allow to link them to device info such as restarts/reboots
 
