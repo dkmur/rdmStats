@@ -14,7 +14,7 @@ mysql -h$dbip -P$dbport -u$sqluser -p$sqlpass $rdmstatsdb < $folder/default_file
 echo ""
 
 # Create procedures
-echo "Creating required proceduress"
+echo "Creating required procedures"
 cp $folder/default_files/procedures.sql.default $folder/procedures.sql.default
 mv $folder/procedures.sql.default $folder/procedures.sql
 sed -i "s/rdmstats/$rdmstatsdb/g" $folder/procedures.sql

@@ -3,17 +3,17 @@
 at the time of writing this nothing has been tested so WIP is an understatement :p
 
 tbd:
-- add grafana templates
+- add grafana templates. As they aren't added yet when executing settings.run errors will show when creating grafana templates. Ignore those for now
 - add worker stats when available in rdm
 - once worker stats have been added it will allow to link them to device info such as restarts/reboots
 
 ## 1 Prerequisites
 - only tested on mariadb 10.5
-- on rdm enable ????
+- in RDM local.json add `"stats": true,` ,disabled by default
 
 ## 2 Setup
 - clone rdmStats, `git clone https://github.com/dkmur/rdmStats.git`
-- copy and fill out config, `cd rdmStats/ && cp default_files/config.ini.example config.ini`
+- copy and fill out config, `cd rdmStats/ && cp default_files/config.ini.default config.ini`
 - execute setting.run
 - add content of crontab.txt to your cron
 - add quest and mon area fences to table geofences and execute settings.run once more to populate column `st`
