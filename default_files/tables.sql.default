@@ -1,6 +1,5 @@
 SET SESSION innodb_strict_mode=OFF;
 
-
 CREATE TABLE IF NOT EXISTS `version` (
   `key` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `version` smallint(6) NOT NULL,
@@ -9,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `version` (
 
 CREATE TABLE IF NOT EXISTS `geofences` (
   `area` varchar(40) NOT NULL,
-  `fence` varchar(40) DEFAULT `Area`,
+  `fence` varchar(40) DEFAULT 'Area',
   `type` enum('mon', 'quest'),
   `coords` text NOT NULL,
   `st` polygon,
@@ -21,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `stats_mon_area` (
   `datetime` datetime NOT NULL,
   `rpl` smallint(6) NOT NULL,
   `area` varchar(40) NOT NULL,
-  `fence` varchar(40) DEFAULT NULL,
+  `fence` varchar(40) NOT NULL,
   `totMon` int(11) DEFAULT NULL,
   `ivMon` int(11) DEFAULT NULL,
   `verifiedEnc` int(11) DEFAULT NULL,
@@ -49,7 +48,7 @@ CREATE TABLE IF NOT EXISTS `stats_spawnpoint` (
   `datetime` datetime NOT NULL,
   `rpl` smallint(6) NOT NULL,
   `area` varchar(40) NOT NULL,
-  `fence` varchar(40) DEFAULT NULL,
+  `fence` varchar(40) NOT NULL,
   `spawnpoints` int(11) DEFAULT NULL,
   `verified` int(11) DEFAULT NULL,
   `seen` int(11) DEFAULT NULL,
@@ -65,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `stats_quest_area` (
   `datetime` datetime NOT NULL,
   `rpl` smallint(6) NOT NULL,
   `area` varchar(40) NOT NULL,
-  `fence` varchar(40) DEFAULT NULL,
+  `fence` varchar(40) NOT NULL,
   `stops` int(11) DEFAULT NULL,
   `AR` int(11) DEFAULT NULL,
   `nonAR` int(11) DEFAULT NULL,
@@ -74,6 +73,18 @@ CREATE TABLE IF NOT EXISTS `stats_quest_area` (
   PRIMARY KEY (`datetime`,`rpl`,`area`,`fence`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+ALTER TABLE stats_mon_area
+CHANGE COLUMN fence fence varchar(40) NOT NULL
+;
+
+ALTER TABLE stats_quest_area
+CHANGE COLUMN fence fence varchar(40) NOT NULL
+;
+
+ALTER TABLE stats_spawnpoint
+CHANGE COLUMN fence fence varchar(40) NOT NULL
+;
+
 -- update db version
 INSERT IGNORE INTO version values ('rdmstats',1);
-UPDATE version set version = 1 where version.key = 'rdmstats';
+UPDATE version set version = 2 where version.key = 'rdmstats';
