@@ -16,44 +16,56 @@ CREATE TEMPORARY TABLE rdmstats.monarea AS (
   least(ifnull(first_encounter,seen_wild),seen_wild) >= @period and
   least(ifnull(first_encounter,seen_wild),seen_wild) < @stop);
 
+-- get areas
+SET @row_number = 0;
+DROP TEMPORARY TABLE IF EXISTS rdmstats.areas;
+CREATE TEMPORARY TABLE rdmstats.areas AS (
+  SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st
+  FROM rdmstats.geofences
+  WHERE st is not NULL and type = 'mon');
+
 -- process fences
-  BEGIN
-    DECLARE area CURSOR FOR SELECT area,fence,st FROM rdmstats.geofences where st is not NULL and type = 'mon';
-    FOR area_record IN area
-    DO
-		INSERT IGNORE INTO rdmstats.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,verifiedReEnc,verifiedWild,encSecLeft,wildSecLeft,resetMon,re_encSecLeft,numWiEnc,numSpWi,numSpEnc,numCeWi,numCeEnc,secWiEnc,secSpWi,secSpEnc,secCeWi,secCeEnc,iv100)
-		SELECT
-		from_unixtime(@period) as 'period',
-		15 as 'rpl',
-		area_record.area,
-		area_record.fence,
-		count(*) as 'totMon',
-		sum(case when first_encounter is not NULL then 1 end) as 'ivMon',
-		sum(case when first_encounter is not NULL and expire_timestamp_verified = 1 then 1 end) as 'verifiedEnc',
-		ifnull(sum(case when stats_reset is not NULL and last_encounter >= stats_reset and expire_timestamp_verified = 1 then 1 end),0) as 'verifiedReEnc',
-		sum(case when seen_wild is not NULL and expire_timestamp_verified = 1 then 1 end) as 'verifiedWild',
-		sum(case when first_encounter is not NULL and expire_timestamp_verified = 1 then expire_timestamp-first_encounter end) as 'encSecLeft',
-		sum(case when seen_wild is not NULL and expire_timestamp_verified = 1 then expire_timestamp-seen_wild end) as 'wildSecLeft',
-		ifnull(sum(case when stats_reset is not NULL then 1 end),0) as 'resetMon',
-		ifnull(sum(case when stats_reset is not NULL and last_encounter >= stats_reset and expire_timestamp_verified = 1 then expire_timestamp-last_encounter end),0) as 're_encSecLeft',
+BEGIN
+  SET @max = (select max(id) from rdmstats.areas);
+  SET @current = 1;
 
-		ifnull(sum(case when seen_wild is not NULL and first_encounter is not NULL and first_encounter - seen_wild > 1 then 1 end),0) as 'numWiEnc',
-		ifnull(sum(case when seen_stop is not NULL and seen_wild is not NULL and seen_wild - seen_stop > 1 then 1 end),0) as 'numSpWi',
-		ifnull(sum(case when seen_stop is not NULL and first_encounter is not NULL and first_encounter - seen_stop > 1 then 1 end),0) as 'numSpEnc',
-		ifnull(sum(case when seen_cell is not NULL and seen_wild is not NULL and seen_wild - seen_cell > 1 then 1 end),0) as 'numCeWi',
-		ifnull(sum(case when seen_cell is not NULL and first_encounter is not NULL and first_encounter - seen_cell > 1 then 1 end),0) as 'numCeEnc',
+  WHILE @current < @max DO
+    INSERT IGNORE INTO rdmstats.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,verifiedReEnc,verifiedWild,encSecLeft,wildSecLeft,resetMon,re_encSecLeft,numWiEnc,numSpWi,numSpEnc,numCeWi,numCeEnc,secWiEnc,secSpWi,secSpEnc,secCeWi,secCeEnc,iv100)
+    SELECT
+    from_unixtime(@period) as 'period',
+    15 as 'rpl',
+    area,
+    fence,
+    count(*) as 'totMon',
+    sum(case when first_encounter is not NULL then 1 end) as 'ivMon',
+    sum(case when first_encounter is not NULL and expire_timestamp_verified = 1 then 1 end) as 'verifiedEnc',
+    ifnull(sum(case when stats_reset is not NULL and last_encounter >= stats_reset and expire_timestamp_verified = 1 then 1 end),0) as 'verifiedReEnc',
+    sum(case when seen_wild is not NULL and expire_timestamp_verified = 1 then 1 end) as 'verifiedWild',
+    sum(case when first_encounter is not NULL and expire_timestamp_verified = 1 then expire_timestamp-first_encounter end) as 'encSecLeft',
+    sum(case when seen_wild is not NULL and expire_timestamp_verified = 1 then expire_timestamp-seen_wild end) as 'wildSecLeft',
+    ifnull(sum(case when stats_reset is not NULL then 1 end),0) as 'resetMon',
+    ifnull(sum(case when stats_reset is not NULL and last_encounter >= stats_reset and expire_timestamp_verified = 1 then expire_timestamp-last_encounter end),0) as 're_encSecLeft',
 
-		ifnull(sum(case when seen_wild is not NULL and first_encounter is not NULL and first_encounter - seen_wild > 1 then first_encounter - seen_wild end),0) as 'secWiEnc',
-		ifnull(sum(case when seen_stop is not NULL and seen_wild is not NULL and seen_wild - seen_stop > 1 then seen_wild - seen_stop end),0) as 'secSpWi',
-		ifnull(sum(case when seen_stop is not NULL and first_encounter is not NULL and first_encounter - seen_stop > 1 then first_encounter - seen_stop end),0) as 'secSpEnc',
-		ifnull(sum(case when seen_cell is not NULL and seen_wild is not NULL and seen_wild - seen_cell > 1 then seen_wild - seen_cell end),0) as 'secCeWi',
-		ifnull(sum(case when seen_cell is not NULL and first_encounter is not NULL and first_encounter - seen_cell > 1 then first_encounter - seen_cell end),0) as 'secCeEnc',
-		ifnull(sum(case when atk_iv=15 and def_iv=15 and sta_iv=15 then 1 end),0) as 'ív100'
+    ifnull(sum(case when seen_wild is not NULL and first_encounter is not NULL and first_encounter - seen_wild > 1 then 1 end),0) as 'numWiEnc',
+    ifnull(sum(case when seen_stop is not NULL and seen_wild is not NULL and seen_wild - seen_stop > 1 then 1 end),0) as 'numSpWi',
+    ifnull(sum(case when seen_stop is not NULL and first_encounter is not NULL and first_encounter - seen_stop > 1 then 1 end),0) as 'numSpEnc',
+    ifnull(sum(case when seen_cell is not NULL and seen_wild is not NULL and seen_wild - seen_cell > 1 then 1 end),0) as 'numCeWi',
+    ifnull(sum(case when seen_cell is not NULL and first_encounter is not NULL and first_encounter - seen_cell > 1 then 1 end),0) as 'numCeEnc',
+
+    ifnull(sum(case when seen_wild is not NULL and first_encounter is not NULL and first_encounter - seen_wild > 1 then first_encounter - seen_wild end),0) as 'secWiEnc',
+    ifnull(sum(case when seen_stop is not NULL and seen_wild is not NULL and seen_wild - seen_stop > 1 then seen_wild - seen_stop end),0) as 'secSpWi',
+    ifnull(sum(case when seen_stop is not NULL and first_encounter is not NULL and first_encounter - seen_stop > 1 then first_encounter - seen_stop end),0) as 'secSpEnc',
+    ifnull(sum(case when seen_cell is not NULL and seen_wild is not NULL and seen_wild - seen_cell > 1 then seen_wild - seen_cell end),0) as 'secCeWi',
+    ifnull(sum(case when seen_cell is not NULL and first_encounter is not NULL and first_encounter - seen_cell > 1 then first_encounter - seen_cell end),0) as 'secCeEnc',
+    ifnull(sum(case when atk_iv=15 and def_iv=15 and sta_iv=15 then 1 end),0) as 'ív100'
 	  
-		from rdmstats.monarea
-		where ST_CONTAINS(area_record.st, location);
-    END FOR;
-  END;
+    FROM rdmstats.monarea, rdmstats.areas
+    WHERE id = @current and ST_CONTAINS(st, location);
+
+    SET @current = @current + 1;
+
+  END WHILE;
+END;
 
 DROP TEMPORARY TABLE rdmstats.monarea;
 
@@ -77,30 +89,41 @@ CREATE TEMPORARY TABLE rdmstats.spawnarea AS (
   SELECT point(lat,lon) as 'location', id, despawn_sec, last_seen
   FROM rdmdb.spawnpoint);
 
+-- get areas
+SET @row_number = 0;
+DROP TEMPORARY TABLE IF EXISTS rdmstats.areas;
+CREATE TEMPORARY TABLE rdmstats.areas AS (
+  SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st
+  FROM rdmstats.geofences
+  WHERE st is not NULL and type = 'mon');
+
 -- process fences
-  BEGIN
-    DECLARE area CURSOR FOR SELECT area,fence,st FROM rdmstats.geofences where st is not NULL and type = 'mon';
-    FOR area_record IN area
-    DO
-                INSERT IGNORE INTO rdmstats.stats_spawnpoint (datetime,rpl,area,fence,spawnpoints,verified,seen,1d,3d,5d,7d,14d)
-                SELECT
-                from_unixtime(@period) as 'period',
-                15 as 'rpl',
-                area_record.area,
-                area_record.fence,
-                count(id) as 'spawnpoints',
-                sum(case when despawn_sec is not NULL then 1 end) as 'verified',
-                sum(case when date(from_unixtime(last_seen)) = date(from_unixtime(@period)) then 1 end) as 'seen',
-                ifnull(sum(case when last_seen < unix_timestamp(now() - interval 1 day) then 1 end),0) as '1d',
-                ifnull(sum(case when last_seen < unix_timestamp(now() - interval 3 day) then 1 end),0) as '3d',
-                ifnull(sum(case when last_seen < unix_timestamp(now() - interval 5 day) then 1 end),0) as '5d',
-                ifnull(sum(case when last_seen < unix_timestamp(now() - interval 7 day) then 1 end),0) as '7d',
-                ifnull(sum(case when last_seen < unix_timestamp(now() - interval 14 day) then 1 end),0) as '14d'
-          
-                from rdmstats.spawnarea
-                where ST_CONTAINS(area_record.st, location);
-    END FOR;
-  END;
+BEGIN
+  SET @max = (select max(id) from rdmstats.areas);
+  SET @current = 1;
+
+  WHILE @current < @max DO
+    INSERT IGNORE INTO rdmstats.stats_spawnpoint (datetime,rpl,area,fence,spawnpoints,verified,seen,1d,3d,5d,7d,14d)
+    SELECT
+    from_unixtime(@period) as 'period',
+    15 as 'rpl',
+    area,
+    fence,
+    count(a.id) as 'spawnpoints',
+    sum(case when despawn_sec is not NULL then 1 end) as 'verified',
+    sum(case when date(from_unixtime(last_seen)) = date(from_unixtime(@period)) then 1 end) as 'seen',
+    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 1 day) then 1 end),0) as '1d',
+    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 3 day) then 1 end),0) as '3d',
+    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 5 day) then 1 end),0) as '5d',
+    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 7 day) then 1 end),0) as '7d',
+    ifnull(sum(case when last_seen < unix_timestamp(now() - interval 14 day) then 1 end),0) as '14d'
+
+    FROM rdmstats.spawnarea a, rdmstats.areas b
+    WHERE b.id = @current and ST_CONTAINS(st, location);
+
+    SET @current = @current + 1;
+  END WHILE;
+END;
 
 DROP TEMPORARY TABLE rdmstats.spawnarea;
 
@@ -117,6 +140,7 @@ BEGIN
   SET @period = (select unix_timestamp(concat(date(now() - interval 15 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 15 minute)) DIV 900) * 900))) );
   SET @stop = (select unix_timestamp(concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 0 minute)) DIV 900) * 900))) );
   SET @perioddate = (select unix_timestamp(date(from_unixtime(@period))));
+
 -- get data
 DROP TEMPORARY TABLE IF EXISTS rdmstats.questarea;
 CREATE TEMPORARY TABLE rdmstats.questarea AS (
@@ -124,26 +148,37 @@ CREATE TEMPORARY TABLE rdmstats.questarea AS (
   FROM rdmdb.pokestop
   );
 
+-- get areas
+SET @row_number = 0;
+DROP TEMPORARY TABLE IF EXISTS rdmstats.areas;
+CREATE TEMPORARY TABLE rdmstats.areas AS (
+  SELECT (@row_number:=@row_number + 1) as 'id',area,fence,st
+  FROM rdmstats.geofences
+  WHERE st is not NULL and type = 'quest');
+
 -- process fences
-  BEGIN
-    DECLARE area CURSOR FOR SELECT area,fence,st FROM rdmstats.geofences where st is not NULL and type = 'quest';
-    FOR area_record IN area
-    DO
-		INSERT IGNORE INTO rdmstats.stats_quest_area (datetime,rpl,area,fence,stops,AR,nonAR,ARcum,nonARcum)
-		SELECT
-		from_unixtime(@period) as 'period',
-		15 as 'rpl',
-		area_record.area,
-		area_record.fence,
-		count(id) as 'stops',
-		ifnull(sum(case when arTime >= @period and arTime < @stop then 1 end),0) as 'AR',
-		ifnull(sum(case when nonarTime >= @period and nonarTime < @stop then 1 end),0) as 'nonAR',
-		ifnull(sum(case when arTime >= @perioddate and arTime < @stop then 1 end),0) as 'ARcum',
-		ifnull(sum(case when nonarTime >= @perioddate and nonarTime < @stop then 1 end),0) as 'nonARcum'
-		from rdmstats.questarea
-		where ST_CONTAINS(area_record.st, location);
-    END FOR;
-  END;
+BEGIN
+  SET @max = (select max(id) from rdmstats.areas);
+  SET @current = 1;
+
+  WHILE @current < @max DO
+    INSERT IGNORE INTO rdmstats.stats_quest_area (datetime,rpl,area,fence,stops,AR,nonAR,ARcum,nonARcum)
+    SELECT
+    from_unixtime(@period) as 'period',
+    15 as 'rpl',
+    area,
+    fence,
+    count(a.id) as 'stops',
+    ifnull(sum(case when arTime >= @period and arTime < @stop then 1 end),0) as 'AR',
+    ifnull(sum(case when nonarTime >= @period and nonarTime < @stop then 1 end),0) as 'nonAR',
+    ifnull(sum(case when arTime >= @perioddate and arTime < @stop then 1 end),0) as 'ARcum',
+    ifnull(sum(case when nonarTime >= @perioddate and nonarTime < @stop then 1 end),0) as 'nonARcum'
+    FROM rdmstats.questarea a, rdmstats.areas b
+    WHERE b.id = @current and ST_CONTAINS(st, location);
+
+    SET @current = @current + 1;
+  END WHILE;
+END;
 
 DROP TEMPORARY TABLE rdmstats.questarea;
 
