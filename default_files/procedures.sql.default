@@ -29,7 +29,7 @@ BEGIN
   SET @max = (select max(id) from rdmstats.areas);
   SET @current = 1;
 
-  WHILE @current < @max DO
+  WHILE @current <= @max DO
     INSERT IGNORE INTO rdmstats.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,verifiedReEnc,verifiedWild,encSecLeft,wildSecLeft,resetMon,re_encSecLeft,numWiEnc,numSpWi,numSpEnc,numCeWi,numCeEnc,secWiEnc,secSpWi,secSpEnc,secCeWi,secCeEnc,iv100)
     SELECT
     from_unixtime(@period) as 'period',
@@ -68,6 +68,7 @@ BEGIN
 END;
 
 DROP TEMPORARY TABLE rdmstats.monarea;
+DROP TEMPORARY TABLE rdmstats.areas;
 
 END
 //
@@ -102,7 +103,7 @@ BEGIN
   SET @max = (select max(id) from rdmstats.areas);
   SET @current = 1;
 
-  WHILE @current < @max DO
+  WHILE @current <= @max DO
     INSERT IGNORE INTO rdmstats.stats_spawnpoint (datetime,rpl,area,fence,spawnpoints,verified,seen,1d,3d,5d,7d,14d)
     SELECT
     from_unixtime(@period) as 'period',
@@ -126,6 +127,7 @@ BEGIN
 END;
 
 DROP TEMPORARY TABLE rdmstats.spawnarea;
+DROP TEMPORARY TABLE rdmstats.areas;
 
 END
 //
@@ -161,7 +163,7 @@ BEGIN
   SET @max = (select max(id) from rdmstats.areas);
   SET @current = 1;
 
-  WHILE @current < @max DO
+  WHILE @current <= @max DO
     INSERT IGNORE INTO rdmstats.stats_quest_area (datetime,rpl,area,fence,stops,AR,nonAR,ARcum,nonARcum)
     SELECT
     from_unixtime(@period) as 'period',
@@ -181,6 +183,7 @@ BEGIN
 END;
 
 DROP TEMPORARY TABLE rdmstats.questarea;
+DROP TEMPORARY TABLE rdmstats.areas;
 
 END
 //

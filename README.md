@@ -8,7 +8,7 @@ tbd:
 - once worker stats have been added it will allow to link them to device info such as restarts/reboots
 
 ## 2 Prerequisites
-- only tested on mariadb 10.5
+- only tested on mariadb 10.5 and 10.6
 - in RDM local.json add `"stats": true,` ,disabled by default
 
 ## 3 Setup
