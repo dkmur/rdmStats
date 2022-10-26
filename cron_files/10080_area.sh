@@ -14,7 +14,7 @@ exec 2>> $folder/logs/log_$(date '+%Y%m').log
 if "$monareastats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
-  mysql -h$dbip -P$dbport -u$sqluser -p$sqlpass $rdmstatsdb < $folder/default_files/10080_mon_area.sql.default
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb < $folder/default_files/10080_mon_area.sql.default
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl10080 mon area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
