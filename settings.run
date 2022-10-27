@@ -10,7 +10,7 @@ echo "[`date '+%Y%m%d %H:%M:%S'`] Setting.run executed" >> $folder/logs/log_$(da
 
 # Create tables
 echo "Creating required tables"
-mysql -h$dbip -P$dbport -u$sqluser -p$sqlpass $rdmstatsdb < $folder/default_files/tables.sql.default
+MYSQL_PWD=$sqlpass mysql -h$dbip -P$dbport -u$sqluser $rdmstatsdb < $folder/default_files/tables.sql.default
 echo ""
 
 # Create procedures
@@ -19,7 +19,7 @@ cp $folder/default_files/procedures.sql.default $folder/procedures.sql.default
 mv $folder/procedures.sql.default $folder/procedures.sql
 sed -i "s/rdmstats/$rdmstatsdb/g" $folder/procedures.sql
 sed -i "s/rdmdb/$scannerdb/g" $folder/procedures.sql
-mysql -h$dbip -P$dbport -u$sqluser -p$sqlpass $rdmstatsdb < $folder/procedures.sql
+MYSQL_PWD=$sqlpass mysql -h$dbip -P$dbport -u$sqluser $rdmstatsdb < $folder/procedures.sql
 echo ""
 
 # Create crontab file
@@ -36,16 +36,16 @@ while read -r line ;do
 area=$(echo $line | awk '{print $1}')
 fence=$(echo $line | awk '{print $2}')
 coords=$(echo $line | awk '{$1=$2=""}1')
-mysql -u$sqluser -p$sqlpass -h$dbip -P$dbport $rdmstatsdb -NB -e "update geofences set st = st_geomfromtext('POLYGON(($coords))') where area = '$area' and fence = '$fence' and type = 'mon' ;"
-done < <(mysql -u$sqluser -p$sqlpass -h$dbip -P$dbport $rdmstatsdb -NB -e "select area,fence,coords from geofences where type = 'mon';")
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb -NB -e "update geofences set st = st_geomfromtext('POLYGON(($coords))') where area = '$area' and fence = '$fence' and type = 'mon' ;"
+done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb -NB -e "select area,fence,coords from geofences where type = 'mon';")
 echo "Update geometry data for quest fences"
 echo ""
 while read -r line ;do
 area=$(echo $line | awk '{print $1}')
 fence=$(echo $line | awk '{print $2}')
 coords=$(echo $line | awk '{$1=$2=""}1')
-mysql -u$sqluser -p$sqlpass -h$dbip -P$dbport $rdmstatsdb -NB -e "update geofences set st = st_geomfromtext('POLYGON(($coords))') where area = '$area' and fence = '$fence' and type = 'quest' ;"
-done < <(mysql -u$sqluser -p$sqlpass -h$dbip -P$dbport $rdmstatsdb -NB -e "select area,fence,coords from geofences where type = 'quest';")
+MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb -NB -e "update geofences set st = st_geomfromtext('POLYGON(($coords))') where area = '$area' and fence = '$fence' and type = 'quest' ;"
+done < <(MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb -NB -e "select area,fence,coords from geofences where type = 'quest';")
 
 # Create grafana templates
 echo "Creating grafana templates in $folder/grafana"

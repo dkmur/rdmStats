@@ -1,5 +1,3 @@
-SET SESSION innodb_strict_mode=OFF;
-
 CREATE TABLE IF NOT EXISTS `version` (
   `key` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `version` smallint(6) NOT NULL,

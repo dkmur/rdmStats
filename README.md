@@ -1,17 +1,17 @@
 # rdmStats
 
-## 1 some intro on what it does
-
+Process rdm scanner data for pokemon, quest and spawnpoint for each defined area into seperate stats tables.<BR>
+Processing is done on interval 15/60/1440/10080 minutes and can be displayed by pre-defined grafana templates.
+<BR>
 tbd:
-- ~~add grafana templates. As they aren't added yet when executing settings.run errors will show when creating grafana templates. Ignore those for now~~
 - add worker stats when available in rdm
 - once worker stats have been added it will allow to link them to device info such as restarts/reboots
 
-## 2 Prerequisites
-- only tested on mariadb 10.5
+## 1 Prerequisites
+- tested on: mariadb 10.5/10.6, mysql server 8.0.31
 - in RDM local.json add `"stats": true,` ,disabled by default
 
-## 3 Setup
+## 2 Setup
 - clone rdmStats, `git clone https://github.com/dkmur/rdmStats.git`
 - copy and fill out config, `cd rdmStats/ && cp default_files/config.ini.default config.ini`
 - execute setting.run
@@ -35,14 +35,14 @@ insert ignore into geofences (area,type,coords) values
 Nore 1: grafana templates will group before first "_" meaning for instance in the example above when looking at stats for area Newyork without specifying a fence the 2 mon areas will be combined<BR>
 Note 2: mon area stats are delayed by one hour compared to quest/spawnpoint and (non existent) worker stats
 
-## 4 Grafana
+## 3 Grafana
 - Install Grafana, more details can be found at https://grafana.com/docs/grafana/latest/installation/debian/#install-from-apt-repository or if you prefer to use docker <https://hub.docker.com/r/grafana/grafana>
 - Create datasource on rdmStats db
 - Add datasource name to config.ini
 - After executing settings.run, import the dashboards from rdmStats/grafana by selecting ``+`` and then import
 
 
-## 5 Updates
+## 4 Updates
 - depending on changes but to be safe, pull+execute settings.run+update crontab
 - replace changed grafana templates
 <BR>

@@ -14,7 +14,7 @@ exec 2>> $folder/logs/log_$(date '+%Y%m').log
 if "$monareastats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
-  mysql -u$sqluser -p$sqlpass -h$dbip -P$dbport $rdmstatsdb < $folder/default_files/60_spawnpoint.sql.default
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb < $folder/default_files/60_spawnpoint.sql.default
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl60 spawnpoint area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
@@ -24,7 +24,7 @@ fi
 if "$questareastats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
-  mysql -u$sqluser -p$sqlpass -h$dbip -P$dbport $rdmstatsdb < $folder/default_files/60_quest_area.sql.default
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb < $folder/default_files/60_quest_area.sql.default
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl60 quest area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
@@ -34,7 +34,7 @@ fi
 if "$monareastats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
-  mysql -h$dbip -P$dbport -u$sqluser -p$sqlpass $rdmstatsdb < $folder/default_files/60_mon_area.sql.default
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb < $folder/default_files/60_mon_area.sql.default
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] rpl60 mon area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
