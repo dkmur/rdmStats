@@ -34,8 +34,8 @@ BEGIN
     SELECT
     from_unixtime(@period) as 'period',
     15 as 'rpl',
-    area,
-    fence,
+    any_value(area),
+    any_value(fence),
     count(*) as 'totMon',
     sum(case when first_encounter is not NULL then 1 end) as 'ivMon',
     sum(case when first_encounter is not NULL and expire_timestamp_verified = 1 then 1 end) as 'verifiedEnc',
@@ -108,8 +108,8 @@ BEGIN
     SELECT
     from_unixtime(@period) as 'period',
     15 as 'rpl',
-    area,
-    fence,
+    any_value(area),
+    any_value(fence),
     count(a.id) as 'spawnpoints',
     sum(case when despawn_sec is not NULL then 1 end) as 'verified',
     sum(case when date(from_unixtime(last_seen)) = date(from_unixtime(@period)) then 1 end) as 'seen',
@@ -168,8 +168,8 @@ BEGIN
     SELECT
     from_unixtime(@period) as 'period',
     15 as 'rpl',
-    area,
-    fence,
+    any_value(area),
+    any_value(fence),
     count(a.id) as 'stops',
     ifnull(sum(case when arTime >= @period and arTime < @stop then 1 end),0) as 'AR',
     ifnull(sum(case when nonarTime >= @period and nonarTime < @stop then 1 end),0) as 'nonAR',
