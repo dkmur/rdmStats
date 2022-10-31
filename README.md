@@ -13,6 +13,7 @@ tbd:
 
 ## 2 Setup
 - clone rdmStats, `git clone https://github.com/dkmur/rdmStats.git`
+- create stats db and user (user needs to have access to both stats db and rdm db)
 - copy and fill out config, `cd rdmStats/ && cp default_files/config.ini.default config.ini`
 - execute setting.run
 - add content of crontab.txt to your cron

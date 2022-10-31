@@ -453,7 +453,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\nleft(datetime,10) as 'datetime',\nArea, \n-- Fence,\nmax(stops) as '#stops',\nmax(ARcum) as '#AR',\n100*max(ARcum)/max(stops) as '%AR',\nmax(nonARcum) as '#nonAR',\n100*max(nonARcum)/max(stops) as '%nonAR'\nFROM stats_quest_area\nWHERE DATE(Datetime) = curdate() and RPL = 15\n-- GROUP BY Area,Fence\nGROUP BY Area",
+          "rawSql": "SELECT\nleft(datetime,10) as 'datetime',\nArea, \n-- Fence,\nmax(stops) as '#stops',\nmax(ARcum) as '#AR',\n100*max(ARcum)/max(stops) as '%AR',\nmax(nonARcum) as '#nonAR',\n100*max(nonARcum)/max(stops) as '%nonAR'\nFROM stats_quest_area\nWHERE DATE(Datetime) = curdate() and RPL = 15\n-- GROUP BY Area,Fence\nGROUP BY left(datetime,10),Area",
           "refId": "A",
           "select": [
             [
