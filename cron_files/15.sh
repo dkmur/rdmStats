@@ -40,7 +40,7 @@ if [[ ! -z $pokemon_history ]] ;then
 fi
 
 # rpl 15 spawnpoint area stats
-if "$monareastats"
+if "$spawnpointareastats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb -e "call rpl15spawnarea();"
