@@ -34,8 +34,8 @@ BEGIN
     SELECT
     from_unixtime(@period) as 'period',
     15 as 'rpl',
-    any_value(area),
-    any_value(fence),
+    area,
+    fence,
     count(*) as 'totMon',
     sum(case when first_encounter is not NULL then 1 end) as 'ivMon',
     sum(case when first_encounter is not NULL and expire_timestamp_verified = 1 then 1 end) as 'verifiedEnc',
@@ -60,7 +60,8 @@ BEGIN
     ifnull(sum(case when atk_iv=15 and def_iv=15 and sta_iv=15 then 1 end),0) as 'iv100'
 	  
     FROM rdmstats.monarea, rdmstats.areas
-    WHERE id = @current and ST_CONTAINS(st, location);
+    WHERE id = @current and ST_CONTAINS(st, location)
+    GROUP BY from_unixtime(@period),area,fence;
 
     SET @current = @current + 1;
 
@@ -108,8 +109,8 @@ BEGIN
     SELECT
     from_unixtime(@period) as 'period',
     15 as 'rpl',
-    any_value(area),
-    any_value(fence),
+    area,
+    fence,
     count(a.id) as 'spawnpoints',
     sum(case when despawn_sec is not NULL then 1 end) as 'verified',
     sum(case when date(from_unixtime(last_seen)) = date(from_unixtime(@period)) then 1 end) as 'seen',
@@ -120,7 +121,8 @@ BEGIN
     ifnull(sum(case when last_seen < unix_timestamp(now() - interval 14 day) then 1 end),0) as '14d'
 
     FROM rdmstats.spawnarea a, rdmstats.areas b
-    WHERE b.id = @current and ST_CONTAINS(st, location);
+    WHERE b.id = @current and ST_CONTAINS(st, location)
+    GROUP BY from_unixtime(@period),area,fence;
 
     SET @current = @current + 1;
   END WHILE;
@@ -168,15 +170,16 @@ BEGIN
     SELECT
     from_unixtime(@period) as 'period',
     15 as 'rpl',
-    any_value(area),
-    any_value(fence),
+    area,
+    fence,
     count(a.id) as 'stops',
     ifnull(sum(case when arTime >= @period and arTime < @stop then 1 end),0) as 'AR',
     ifnull(sum(case when nonarTime >= @period and nonarTime < @stop then 1 end),0) as 'nonAR',
     ifnull(sum(case when arTime >= @perioddate and arTime < @stop then 1 end),0) as 'ARcum',
     ifnull(sum(case when nonarTime >= @perioddate and nonarTime < @stop then 1 end),0) as 'nonARcum'
     FROM rdmstats.questarea a, rdmstats.areas b
-    WHERE b.id = @current and ST_CONTAINS(st, location);
+    WHERE b.id = @current and ST_CONTAINS(st, location)
+    GROUP BY from_unixtime(@period),area,fence;
 
     SET @current = @current + 1;
   END WHILE;
