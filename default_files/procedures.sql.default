@@ -76,7 +76,7 @@ BEGIN
 	  
     FROM rdmstats.monarea, rdmstats.areas
     WHERE id = @current and ST_CONTAINS(st, location)
-    GROUP BY from_unixtime(@period),area,fence;
+    GROUP BY area,fence;
 
     SET @current = @current + 1;
 
@@ -144,7 +144,7 @@ BEGIN
 
     FROM rdmstats.spawnarea a, rdmstats.areas b
     WHERE b.id = @current and ST_CONTAINS(st, location)
-    GROUP BY from_unixtime(@period),area,fence;
+    GROUP BY area,fence;
 
     SET @current = @current + 1;
   END WHILE;
@@ -201,7 +201,7 @@ BEGIN
     ifnull(sum(case when nonarTime >= @perioddate and nonarTime < @stop then 1 end),0) as 'nonARcum'
     FROM rdmstats.questarea a, rdmstats.areas b
     WHERE b.id = @current and ST_CONTAINS(st, location)
-    GROUP BY from_unixtime(@period),area,fence;
+    GROUP BY area,fence;
 
     SET @current = @current + 1;
   END WHILE;

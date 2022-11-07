@@ -17,4 +17,4 @@
 30 2-23 * * * cd rdmstatspath/cron_files && ./15.sh
 45 2-23 * * * cd rdmstatspath/cron_files && ./15.sh
 ## Cleanup pokemon_history
-*/5 * * * * cd rdmstatspath/cron_files && ./5.sh
+2/5 * * * * cd rdmstatspath/cron_files && ./5.sh
