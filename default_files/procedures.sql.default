@@ -9,7 +9,22 @@ BEGIN
 
 -- get data
 DROP TEMPORARY TABLE IF EXISTS rdmstats.monarea;
-CREATE TEMPORARY TABLE rdmstats.monarea AS (
+CREATE TEMPORARY TABLE rdmstats.monarea 
+  (`location` point NOT NULL,
+   `first_encounter` int(10) signed,
+   `expire_timestamp` int(10) signed,
+   `expire_timestamp_verified` tinyint(3) unsigned,
+   `stats_reset` int(10) signed,
+   `last_encounter` int(10) signed,
+   `seen_wild` int(10) signed,
+   `seen_stop` int(10) signed,
+   `seen_cell` int(10) signed,
+   `atk_iv` tinyint(3) unsigned,
+   `def_iv` tinyint(3) unsigned,
+   `sta_iv` tinyint(3) unsigned,
+   SPATIAL INDEX(`location`)
+  )
+  AS (
   SELECT location, cast(first_encounter AS SIGNED) as 'first_encounter', cast(expire_timestamp AS SIGNED) as 'expire_timestamp', expire_timestamp_verified, stats_reset, cast(last_encounter AS SIGNED) as 'last_encounter', cast(seen_wild AS SIGNED) as 'seen_wild', cast(seen_stop AS SIGNED) as 'seen_stop', cast(seen_cell AS SIGNED) as 'seen_cell',atk_iv,def_iv,sta_iv 
   FROM rdmdb.pokemon_history
   WHERE
@@ -87,7 +102,14 @@ BEGIN
 
 -- get data
 DROP TEMPORARY TABLE IF EXISTS rdmstats.spawnarea;
-CREATE TEMPORARY TABLE rdmstats.spawnarea AS (
+CREATE TEMPORARY TABLE rdmstats.spawnarea
+  (`location` point NOT NULL,
+   `id` bigint(20) unsigned,
+   `despawn_sec` smallint(5) unsigned,
+   `last_seen` int(10) unsigned,
+   SPATIAL INDEX(`location`)
+  )
+  AS (
   SELECT point(lat,lon) as 'location', id, despawn_sec, last_seen
   FROM rdmdb.spawnpoint);
 
@@ -187,6 +209,27 @@ END;
 
 DROP TEMPORARY TABLE rdmstats.questarea;
 DROP TEMPORARY TABLE rdmstats.areas;
+
+END
+//
+DELIMITER ;
+
+DROP PROCEDURE IF EXISTS rdmdb.historyCleanup;
+DELIMITER //
+CREATE PROCEDURE rdmdb.historyCleanup()
+BEGIN
+
+-- get data
+DROP TEMPORARY TABLE IF EXISTS rdmdb.historyCleanup;
+CREATE TEMPORARY TABLE rdmdb.historyCleanup AS (
+  SELECT id
+  FROM rdmdb.pokemon_history
+  WHERE expire_timestamp < unix_timestamp() - (XXYY*86400)
+  );
+
+DELETE pokemon_history FROM rdmdb.pokemon_history JOIN rdmdb.historyCleanup ON rdmdb.pokemon_history.id = rdmdb.historyCleanup.id; 
+
+DROP TEMPORARY TABLE rdmdb.historyCleanup;
 
 END
 //
