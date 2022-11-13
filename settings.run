@@ -19,6 +19,7 @@ cp $folder/default_files/procedures.sql.default $folder/procedures.sql.default
 mv $folder/procedures.sql.default $folder/procedures.sql
 sed -i "s/rdmstats/$rdmstatsdb/g" $folder/procedures.sql
 sed -i "s/rdmdb/$scannerdb/g" $folder/procedures.sql
+sed -i "s/XXYY/$pokemon_history/g" $folder/procedures.sql
 MYSQL_PWD=$sqlpass mysql -h$dbip -P$dbport -u$sqluser $rdmstatsdb < $folder/procedures.sql
 echo ""
 

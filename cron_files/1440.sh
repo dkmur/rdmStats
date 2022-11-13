@@ -11,7 +11,7 @@ touch $folder/logs/log_$(date '+%Y%m').log
 exec 2>> $folder/logs/log_$(date '+%Y%m').log
 
 # rpl 1440 spawnpoint area stats
-if "$monareastats"
+if "$spawnpointareastats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb < $folder/default_files/1440_spawnpoint.sql.default

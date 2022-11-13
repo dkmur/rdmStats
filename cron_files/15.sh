@@ -30,17 +30,10 @@ then
   echo "[$start] [$stop] [$diff] rpl15 mon area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
 fi
 
-# table cleanup pokemon_history
-if [[ ! -z $pokemon_history ]] ;then
-  start=$(date '+%Y%m%d %H:%M:%S')
-  MYSQL_PWD=$sqlpass mysql -h$dbip -P$dbport -u$sqluser $scannerdb -e "delete from pokemon_history where expire_timestamp < unix_timestamp(now() - interval $pokemon_history day);"
-  stop=$(date '+%Y%m%d %H:%M:%S')
-  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
-  echo "[$start] [$stop] [$diff] cleanup table pokemon_history" >> $folder/logs/log_$(date '+%Y%m').log
-fi
+# table cleanup pokemon_history, moved to 5.sh
 
 # rpl 15 spawnpoint area stats
-if "$monareastats"
+if "$spawnpointareastats"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb -e "call rpl15spawnarea();"
