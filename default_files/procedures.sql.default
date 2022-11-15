@@ -21,8 +21,8 @@ CREATE TEMPORARY TABLE rdmstats.monarea
    `seen_cell` int(10) signed,
    `atk_iv` tinyint(3) unsigned,
    `def_iv` tinyint(3) unsigned,
-   `sta_iv` tinyint(3) unsigned,
-   SPATIAL INDEX(`location`)
+   `sta_iv` tinyint(3) unsigned
+--   SPATIAL INDEX(`location`)
   )
   AS (
   SELECT location, cast(first_encounter AS SIGNED) as 'first_encounter', cast(expire_timestamp AS SIGNED) as 'expire_timestamp', expire_timestamp_verified, stats_reset, cast(last_encounter AS SIGNED) as 'last_encounter', cast(seen_wild AS SIGNED) as 'seen_wild', cast(seen_stop AS SIGNED) as 'seen_stop', cast(seen_cell AS SIGNED) as 'seen_cell',atk_iv,def_iv,sta_iv 
@@ -106,8 +106,8 @@ CREATE TEMPORARY TABLE rdmstats.spawnarea
   (`location` point NOT NULL,
    `id` bigint(20) unsigned,
    `despawn_sec` smallint(5) unsigned,
-   `last_seen` int(10) unsigned,
-   SPATIAL INDEX(`location`)
+   `last_seen` int(10) unsigned
+--   SPATIAL INDEX(`location`)
   )
   AS (
   SELECT point(lat,lon) as 'location', id, despawn_sec, last_seen
