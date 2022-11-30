@@ -1,0 +1,41 @@
+-- Settings
+select @period := concat(date(now() - interval 1440 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 1440 minute)) DIV 900) * 900));
+select @stop :=  concat(date(now() - interval 0 minute),' ', SEC_TO_TIME((TIME_TO_SEC(time(now() - interval 0 minute)) DIV 3600) * 3600));
+select @rpl := '1440';
+
+-- execution
+INSERT IGNORE INTO atlasLogs (datetime,rpl,deviceName,reboot,m_noInternet,m_noConfig,m_noLicense,m_atlasDied,m_pogoDied,m_deviceOffline,m_noRDM,m_noFocus,m_unknown,reboot_tot,m_noInternet_tot,m_noConfig_tot,m_noLicense_tot,m_atlasDied_tot,m_pogoDied_tot,m_deviceOffline_tot,m_noRDM_tot,m_noFocus_tot,m_unknown_tot)
+SELECT
+@period,
+@rpl,
+deviceName,
+sum(reboot),
+sum(m_noInternet),
+sum(m_noConfig),
+sum(m_noLicense),
+sum(m_atlasDied),
+sum(m_pogoDied),
+sum(m_deviceOffline),
+sum(m_noRDM),
+sum(m_noFocus),
+sum(m_unknown),
+max(reboot_tot),
+max(m_noInternet_tot),
+max(m_noConfig_tot),
+max(m_noLicense_tot),
+max(m_atlasDied_tot),
+max(m_pogoDied_tot),
+max(m_deviceOffline_tot),
+max(m_noRDM_tot),
+max(m_noFocus_tot),
+max(m_unknown_tot)
+
+FROM atlasLogs
+
+WHERE
+timestamp >= @period and
+timestamp < @stop and
+rpl = 60
+
+GROUP BY deviceName
+;
