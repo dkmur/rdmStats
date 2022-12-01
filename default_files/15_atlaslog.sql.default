@@ -9,7 +9,7 @@ CREATE TEMPORARY TABLE tmp1
 AS(
 SELECT deviceName,reboot_tot,m_noInternet_tot,m_noConfig_tot,m_noLicense_tot,m_atlasDied_tot,m_pogoDied_tot,m_deviceOffline_tot,m_noRDM_tot,m_noFocus_tot,m_unknown_tot
 FROM atlasLogs
-WHERE timestamp = @previous and RPL = 15
+WHERE datetime = @previous and RPL = 15
 );
 
 INSERT IGNORE INTO atlasLogs (datetime,rpl,deviceName,reboot,m_noInternet,m_noConfig,m_noLicense,m_atlasDied,m_pogoDied,m_deviceOffline,m_noRDM,m_noFocus,m_unknown,reboot_tot,m_noInternet_tot,m_noConfig_tot,m_noLicense_tot,m_atlasDied_tot,m_pogoDied_tot,m_deviceOffline_tot,m_noRDM_tot,m_noFocus_tot,m_unknown_tot)

@@ -33,8 +33,8 @@ max(m_unknown_tot)
 FROM atlasLogs
 
 WHERE
-timestamp >= @period and
-timestamp < @stop and
+datetime >= @period and
+datetime < @stop and
 rpl = 60
 
 GROUP BY deviceName

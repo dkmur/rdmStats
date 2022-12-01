@@ -8,6 +8,7 @@ INSERT IGNORE INTO atlasLogs (datetime,rpl,deviceName,reboot,m_noInternet,m_noCo
 SELECT
 @period,
 @rpl,
+deviceName,
 sum(reboot),
 sum(m_noInternet),
 sum(m_noConfig),
@@ -32,8 +33,8 @@ max(m_unknown_tot)
 FROM atlasLogs
 
 WHERE
-timestamp >= @period and
-timestamp < @stop and
+datetime >= @period and
+datetime < @stop and
 rpl = 15
 
 GROUP BY deviceName
