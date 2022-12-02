@@ -71,3 +71,12 @@ then
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] daily removal converted stop/gym" >> $folder/logs/log_$(date '+%Y%m').log
 fi
+
+## Cleaup unseen spawnpoints
+if [[ ! -z spawn_delete_days ]] ;then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $scannerdb -e "delete from spawnpoint where last_seen < (unix_timestamp() - ($spawn_delete_days*86400));"
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] remove spawnpoints unseen for $spawn_delete_days days" >> $folder/logs/log_$(date '+%Y%m').log
+fi
