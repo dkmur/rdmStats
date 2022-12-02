@@ -80,3 +80,24 @@ if [[ ! -z spawn_delete_days ]] ;then
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
   echo "[$start] [$stop] [$diff] remove spawnpoints unseen for $spawn_delete_days days" >> $folder/logs/log_$(date '+%Y%m').log
 fi
+
+## backup rdm db
+if "$rdm_backup"
+then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  mkdir -p $folder/rdmbackup
+  MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport $scannerdb > $folder/rdmbackup/rdmbackup_$(date +%Y-%m-%d).sql
+  cd $folder/rdmbackup && tar --remove-files -czvf rdmbackup_$(date +%Y-%m-%d).sql.tar.gz rdmbackup_$(date +%Y-%m-%d).sql
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] daily rdm backup" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+## rdm db backup cleanup
+if "$rdm_backup"
+then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  find $folder/rdmbackup -type f -mtime +$rdm_backup_days -exec rm -f {} \;
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] daily rdm backup cleanup" >> $folder/logs/log_$(date '+%Y%m').log
+fi

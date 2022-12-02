@@ -28,4 +28,6 @@ atlas_monitor=false					# process aconf atlas_monitor log data. Requires atvdeta
 
 ## Miscellaneous
 remove_converted_stopgym=false				# daily remove stop or gym from db that converted based on last_modified_timestamp
-spawn_delete_days=9999					# delete spawnpoints not seen for X days from db
+spawn_delete_days=999999				# delete spawnpoints not seen for X days from db
+rdm_backup=true						# daily backup rdm db excluding tables pokemon/pokemon_history/pokemon_timing
+rdm_backup_days=7					# days to keep rdm db backup 
