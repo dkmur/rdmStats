@@ -25,3 +25,6 @@ area_rpl10080=99999
 
 ## atlas log processing
 atlas_monitor=false					# process aconf atlas_monitor log data. Requires atvdetails sender/receiver to be enabled and ofcourse monitor itself
+
+## Miscellaneous
+remove_converted_stopgym=false				# daily remove stop or gym from db that converted based on last_modified_timestamp
