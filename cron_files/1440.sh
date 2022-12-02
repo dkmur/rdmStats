@@ -86,7 +86,8 @@ if "$rdm_backup"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
   mkdir -p $folder/rdmbackup
-  MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport $scannerdb > $folder/rdmbackup/rdmbackup_$(date +%Y-%m-%d).sql
+  MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport $scannerdb --no-data --routines --triggers > $folder/rdmbackup/rdmbackup_$(date +%Y-%m-%d).sql
+  MYSQL_PWD=$sqlpass mysqldump -u$sqluser -h$dbip -P$dbport $scannerdb --ignore-table=$scannerdb.pokemon --ignore-table=$scannerdb.pokemon_history --ignore-table=$scannerdb.pokemon_timing >> $folder/rdmbackup/rdmbackup_$(date +%Y-%m-%d).sql
   cd $folder/rdmbackup && tar --remove-files -czvf rdmbackup_$(date +%Y-%m-%d).sql.tar.gz rdmbackup_$(date +%Y-%m-%d).sql
   stop=$(date '+%Y%m%d %H:%M:%S')
   diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
