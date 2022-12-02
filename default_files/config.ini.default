@@ -8,7 +8,8 @@ rdmstatsdb=rdmstats
 receiverdb=aconf					#database where atlas atvdetails webhook receiver data is stored 
 
 ## Grafana datasource
-datasource_rdmstats=rdmstats				#grafana datsource name for rdmstatsdb
+datasource_rdmstats=rdmstats				#grafana datasource name for rdmstatsdb
+datasource_aconf=aconf                                  #grafana datasource name for atlas aconf raw data db, can be same as datasource_rdmstats
 
 ## Stats processing
 monareastats=true					# make sure to add mon geofences to rdmstats table geofences. First and last coordinate of column coords must be the same. 
