@@ -5,9 +5,11 @@ dbip=127.0.0.1
 dbport=3306
 scannerdb=rdmdb
 rdmstatsdb=rdmstats
+receiverdb=aconf					#database where atlas atvdetails webhook receiver data is stored 
 
 ## Grafana datasource
-datasource_rdmstats=rdmstats				#grafana datsource name for rdmstatsdb
+datasource_rdmstats=rdmstats				#grafana datasource name for rdmstatsdb
+datasource_aconf=aconf                                  #grafana datasource name for atlas aconf raw data db, can be same as datasource_rdmstats
 
 ## Stats processing
 monareastats=true					# make sure to add mon geofences to rdmstats table geofences. First and last coordinate of column coords must be the same. 
@@ -20,3 +22,12 @@ area_rpl15=90
 area_rpl60=180
 area_rpl1440=365
 area_rpl10080=99999
+
+## atlas log processing
+atlas_monitor=false					# process aconf atlas_monitor log data. Requires atvdetails sender/receiver to be enabled and ofcourse monitor itself
+
+## Miscellaneous
+remove_converted_stopgym=false				# daily remove stop or gym from db that converted based on last_modified_timestamp
+spawn_delete_days=999999				# delete spawnpoints not seen for X days from db
+rdm_backup=true						# daily backup rdm db excluding tables pokemon/pokemon_history/pokemon_timing
+rdm_backup_days=7					# days to keep rdm db backup 

@@ -30,6 +30,16 @@ then
   echo "[$start] [$stop] [$diff] rpl15 mon area stats processing" >> $folder/logs/log_$(date '+%Y%m').log
 fi
 
+# rpl 15 atlas monitor log
+if "$atlas_monitor"
+then
+  start=$(date '+%Y%m%d %H:%M:%S')
+  MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $rdmstatsdb < $folder/cron_files/15_atlaslog.sql
+  stop=$(date '+%Y%m%d %H:%M:%S')
+  diff=$(printf '%02dm:%02ds\n' $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))/60)) $(($(($(date -d "$stop" +%s) - $(date -d "$start" +%s)))%60)))
+  echo "[$start] [$stop] [$diff] rpl15 atlas monitor log processing" >> $folder/logs/log_$(date '+%Y%m').log
+fi
+
 # table cleanup pokemon_history, moved to 5.sh
 
 # rpl 15 spawnpoint area stats

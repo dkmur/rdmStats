@@ -30,6 +30,12 @@ pfff=$(sed 's@/@\\/@g' <<< $folder)
 sed -i "s/rdmstatspath/$pfff/g" crontab.txt
 echo ""
 
+# Create cron files
+echo "Creating sql files"
+rm -f $folder/cron_files/*.sql
+cp $folder/default_files/15_atlaslog.sql.default $folder/cron_files/15_atlaslog.sql
+sed -i "s/aconf/$receiverdb/g" $folder/cron_files//15_atlaslog.sql
+
 # Add/update st data to table geofences
 echo "Update geometry data for mon fences"
 echo ""
@@ -57,9 +63,11 @@ for i in "$folder"/grafana/*.json.default ;do
   mv $i ${i%%.default}
 done
 DS_RDMSTATS="${datasource_rdmstats^^}"
+DS_ACONF="${datasource_aconf^^}"
 cd $folder/grafana/ && sed -i "s/RDM_Stats/$datasource_rdmstats/g" *.json
 cd $folder/grafana/ && sed -i "s/RDM_STATS/$DS_RDMSTATS/g" *.json
-
+cd $folder/grafana/ && sed -i "s/aconf/$datasource_aconf/g" *.json
+cd $folder/grafana/ && sed -i "s/ACONF/$DS_ACONF/g" *.json
 
 echo ""
 echo "All done!"
