@@ -64,7 +64,6 @@ fi
 if "$remove_converted_stopgym"
 then
   start=$(date '+%Y%m%d %H:%M:%S')
-  mkdir -p $folder/dragobackup
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $scannerdb -e "delete a from pokestop a join gym b on a.id=b.id where a.last_modified_timestamp<b.last_modified_timestamp;"
   MYSQL_PWD=$sqlpass mysql -u$sqluser -h$dbip -P$dbport $scannerdb -e "delete a from gym a join pokestop b on a.id=b.id where a.last_modified_timestamp<b.last_modified_timestamp;"
   stop=$(date '+%Y%m%d %H:%M:%S')
