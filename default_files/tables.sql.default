@@ -77,6 +77,33 @@ CREATE TABLE IF NOT EXISTS `stats_quest_area` (
   PRIMARY KEY (`datetime`,`rpl`,`area`,`fence`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS `atlasLogs` (
+  `datetime` datetime NOT NULL,
+  `rpl` smallint(6) NOT NULL,
+  `deviceName` varchar(50) NOT NULL,
+  `reboot` int(11) DEFAULT NULL,
+  `m_noInternet` int(11) DEFAULT NULL,
+  `m_noConfig` int(11) DEFAULT NULL,
+  `m_noLicense` int(11) DEFAULT NULL,
+  `m_atlasDied` int(11) DEFAULT NULL,
+  `m_pogoDied` int(11) DEFAULT NULL,
+  `m_deviceOffline` int(11) DEFAULT NULL,
+  `m_noRDM` int(11) DEFAULT NULL,
+  `m_noFocus` int(11) DEFAULT NULL,
+  `m_unknown` int(11) DEFAULT NULL,
+  `reboot_tot` int(11) DEFAULT NULL,
+  `m_noInternet_tot` int(11) DEFAULT NULL,
+  `m_noConfig_tot` int(11) DEFAULT NULL,
+  `m_noLicense_tot` int(11) DEFAULT NULL,
+  `m_atlasDied_tot` int(11) DEFAULT NULL,
+  `m_pogoDied_tot` int(11) DEFAULT NULL,
+  `m_deviceOffline_tot` int(11) DEFAULT NULL,
+  `m_noRDM_tot` int(11) DEFAULT NULL,
+  `m_noFocus_tot` int(11) DEFAULT NULL,
+  `m_unknown_tot` int(11) DEFAULT NULL,
+  PRIMARY KEY (`datetime`,`rpl`,`deviceName`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 ALTER TABLE stats_mon_area
 CHANGE COLUMN fence fence varchar(40) NOT NULL
 ;
@@ -91,4 +118,4 @@ CHANGE COLUMN fence fence varchar(40) NOT NULL
 
 -- update db version
 INSERT IGNORE INTO version values ('rdmstats',1);
-UPDATE version set version = 2 where version.key = 'rdmstats';
+UPDATE version set version = 3 where version.key = 'rdmstats';
