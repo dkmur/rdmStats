@@ -45,7 +45,7 @@ BEGIN
   SET @current = 1;
 
   WHILE @current <= @max DO
-    INSERT IGNORE INTO rdmstats.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,verifiedReEnc,verifiedWild,encSecLeft,wildSecLeft,resetMon,re_encSecLeft,numWiEnc,numSpWi,numSpEnc,numCeWi,numCeEnc,secWiEnc,secSpWi,secSpEnc,secCeWi,secCeEnc,iv100)
+    INSERT IGNORE INTO rdmstats.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,verifiedReEnc,verifiedWild,encSecLeft,wildSecLeft,resetMon,re_encSecLeft,encTthMax10,encTth10to20,encTth20to30,encTth30to40,encTth40to50,encTthMin50,numWiEnc,numSpWi,numSpEnc,numCeWi,numCeEnc,secWiEnc,secSpWi,secSpEnc,secCeWi,secCeEnc,iv100)
     SELECT
     from_unixtime(@period) as 'period',
     15 as 'rpl',
@@ -60,6 +60,13 @@ BEGIN
     sum(case when seen_wild is not NULL and expire_timestamp_verified = 1 then expire_timestamp-seen_wild end) as 'wildSecLeft',
     ifnull(sum(case when stats_reset is not NULL then 1 end),0) as 'resetMon',
     ifnull(sum(case when stats_reset is not NULL and last_encounter >= stats_reset and expire_timestamp_verified = 1 then expire_timestamp-last_encounter end),0) as 're_encSecLeft',
+
+    ifnull(sum(case when expire_timestamp-first_encounter < 600 and expire_timestamp_verified = 1 then 1 end),0) as 'encTthMax10',
+    ifnull(sum(case when expire_timestamp-first_encounter < 20*60 and expire_timestamp-first_encounter >= 10*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth10to20',
+    ifnull(sum(case when expire_timestamp-first_encounter < 30*60 and expire_timestamp-first_encounter >= 20*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth20to30',
+    ifnull(sum(case when expire_timestamp-first_encounter < 40*60 and expire_timestamp-first_encounter >= 30*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth30to40',
+    ifnull(sum(case when expire_timestamp-first_encounter < 50*60 and expire_timestamp-first_encounter >= 40*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth40to50',
+    ifnull(sum(case when expire_timestamp-first_encounter >= 50*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTthMin50',
 
     ifnull(sum(case when seen_wild is not NULL and first_encounter is not NULL and first_encounter - seen_wild > 1 then 1 end),0) as 'numWiEnc',
     ifnull(sum(case when seen_stop is not NULL and seen_wild is not NULL and seen_wild - seen_stop > 1 then 1 end),0) as 'numSpWi',
