@@ -27,10 +27,12 @@ CREATE TEMPORARY TABLE rdmstats.monarea
   AS (
   SELECT location, cast(first_encounter AS SIGNED) as 'first_encounter', cast(expire_timestamp AS SIGNED) as 'expire_timestamp', expire_timestamp_verified, stats_reset, cast(last_encounter AS SIGNED) as 'last_encounter', cast(seen_wild AS SIGNED) as 'seen_wild', cast(seen_stop AS SIGNED) as 'seen_stop', cast(seen_cell AS SIGNED) as 'seen_cell',atk_iv,def_iv,sta_iv 
   FROM rdmdb.pokemon_history
-  WHERE
-  least(ifnull(first_encounter,seen_wild),seen_wild) >= @period and
-  least(ifnull(first_encounter,seen_wild),seen_wild) < @stop);
-
+  WHERE seen_wild >= @period and seen_wild < @stop
+  UNION ALL
+  SELECT location, cast(first_encounter AS SIGNED) as 'first_encounter', cast(expire_timestamp AS SIGNED) as 'expire_timestamp', expire_timestamp_verified, stats_reset, cast(last_encounter AS SIGNED) as 'last_encounter', cast(seen_wild AS SIGNED) as 'seen_wild', cast(seen_stop AS SIGNED) as 'seen_stop', cast(seen_cell AS SIGNED) as 'seen_cell',atk_iv,def_iv,sta_iv
+  FROM rdmdb.pokemon_history
+  WHERE seen_wild is NULL and first_encounter >= @period and first_encounter < @stop
+  );
 -- get areas
 SET @row_number = 0;
 DROP TEMPORARY TABLE IF EXISTS rdmstats.areas;
