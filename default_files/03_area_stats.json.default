@@ -1322,7 +1322,7 @@
           "editorMode": "code",
           "format": "table",
           "rawQuery": true,
-          "rawSql": "SELECT\r\n  $__timeGroup(Datetime,$__interval) as 'time',\r\n  sum(encTthMax10) AS \"below_10\",\r\n  sum(encTth10to20) AS \"10_to_20\",\r\n  sum(encTth20to30) AS \"20_to_30\",\r\n  sum(encTth30to40) AS \"30_to_40\",\r\n  sum(encTth40to50) AS \"40_to_50\",\r\n  sum(encTthmin50) AS \"over_50\"\r\nFROM stats_mon_area\r\nWHERE\r\n  $__timeFilter(datetime) and\r\n  rpl = '$rpl' and\r\n  area in ($area) and\r\n  fence in ($fence)\r\nGROUP BY 1\r\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "rawSql": "SELECT\r\n  $__timeGroup(Datetime,$__interval) as 'time',\r\n  sum(encTthMax5) AS "below_5",\r\n  sum(encTth5to10) AS "5_to_10",\r\n  sum(encTth10to15) AS "10_to_15",\r\n  sum(encTth15to20) AS "15_to_20",\r\n  sum(encTth20to25) AS "20_to_25",\r\n  sum(encTth25to30) AS "25_to_30",\r\n  sum(encTth30to35) AS "30_to_35",\r\n  sum(encTth35to40) AS "35_to_40",\r\n  sum(encTth40to45) AS "40_to_45",\r\n  sum(encTth45to50) AS "45_to_50",\r\n  sum(encTth50to55) AS "50_to_55",\r\n  sum(encTthmin55) AS "over_55"\r\nFROM stats_mon_area\r\nWHERE\r\n  $__timeFilter(datetime) and\r\n  rpl = '$rpl' and\r\n  area in ($area) and\r\n  fence in ($fence)\r\nGROUP BY 1\r\nORDER BY $__timeGroup(Datetime,$__interval)",
           "refId": "A",
           "sql": {
             "columns": [

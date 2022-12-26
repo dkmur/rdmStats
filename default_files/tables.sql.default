@@ -25,12 +25,18 @@ CREATE TABLE IF NOT EXISTS `stats_mon_area` (
   `verifiedReEnc` int(11) DEFAULT NULL,
   `verifiedWild` int(11) DEFAULT NULL,
   `encSecLeft` int(11) DEFAULT NULL,
-  `encTthMax10` int(11) DEFAULT NULL,
-  `encTth10to20` int(11) DEFAULT NULL,
-  `encTth20to30` int(11) DEFAULT NULL,
-  `encTth30to40` int(11) DEFAULT NULL,
-  `encTth40to50` int(11) DEFAULT NULL,
-  `encTthMin50` int(11) DEFAULT NULL,
+  `encTthMax5` int(11) DEFAULT NULL,
+  `encTth5to10` int(11) DEFAULT NULL,
+  `encTth10to15` int(11) DEFAULT NULL,
+  `encTth15to20` int(11) DEFAULT NULL,
+  `encTth20to25` int(11) DEFAULT NULL,
+  `encTth25to30` int(11) DEFAULT NULL,
+  `encTth30to35` int(11) DEFAULT NULL,
+  `encTth35to40` int(11) DEFAULT NULL,
+  `encTth40to45` int(11) DEFAULT NULL,
+  `encTth45to50` int(11) DEFAULT NULL,
+  `encTth50to55` int(11) DEFAULT NULL,
+  `encTthMin55` int(11) DEFAULT NULL,
   `wildSecLeft` int(11) DEFAULT NULL,
   `resetMon` int(11) DEFAULT NULL,
   `re_encSecLeft` int(11) DEFAULT NULL,
@@ -105,7 +111,19 @@ CREATE TABLE IF NOT EXISTS `atlasLogs` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 ALTER TABLE stats_mon_area
-CHANGE COLUMN fence fence varchar(40) NOT NULL
+CHANGE COLUMN fence fence varchar(40) NOT NULL,
+ADD COLUMN IF NOT EXISTS `encTthMax5` int(11) DEFAULT NULL AFTER `encSecLeft`,
+ADD COLUMN IF NOT EXISTS `encTth5to10` int(11) DEFAULT NULL AFTER `encTthMax5`,
+ADD COLUMN IF NOT EXISTS `encTth10to15` int(11) DEFAULT NULL AFTER `encTth5to10`,
+ADD COLUMN IF NOT EXISTS `encTth15to20` int(11) DEFAULT NULL AFTER `encTth10to15`,
+ADD COLUMN IF NOT EXISTS `encTth20to25` int(11) DEFAULT NULL AFTER `encTth15to20`,
+ADD COLUMN IF NOT EXISTS `encTth25to30` int(11) DEFAULT NULL AFTER `encTth20to25`,
+ADD COLUMN IF NOT EXISTS `encTth30to35` int(11) DEFAULT NULL AFTER `encTth25to30`,
+ADD COLUMN IF NOT EXISTS `encTth35to40` int(11) DEFAULT NULL AFTER `encTth30to35`,
+ADD COLUMN IF NOT EXISTS `encTth40to45` int(11) DEFAULT NULL AFTER `encTth35to40`,
+ADD COLUMN IF NOT EXISTS `encTth45to50` int(11) DEFAULT NULL AFTER `encTth40to45`,
+ADD COLUMN IF NOT EXISTS `encTth50to55` int(11) DEFAULT NULL AFTER `encTth45to50`,
+ADD COLUMN IF NOT EXISTS `encTthMin55` int(11) DEFAULT NULL AFTER `encTth50to55`
 ;
 
 ALTER TABLE stats_quest_area
@@ -118,4 +136,4 @@ CHANGE COLUMN fence fence varchar(40) NOT NULL
 
 -- update db version
 INSERT IGNORE INTO version values ('rdmstats',1);
-UPDATE version set version = 3 where version.key = 'rdmstats';
+UPDATE version set version = 4 where version.key = 'rdmstats';
