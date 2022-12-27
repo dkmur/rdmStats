@@ -27,10 +27,12 @@ CREATE TEMPORARY TABLE rdmstats.monarea
   AS (
   SELECT location, cast(first_encounter AS SIGNED) as 'first_encounter', cast(expire_timestamp AS SIGNED) as 'expire_timestamp', expire_timestamp_verified, stats_reset, cast(last_encounter AS SIGNED) as 'last_encounter', cast(seen_wild AS SIGNED) as 'seen_wild', cast(seen_stop AS SIGNED) as 'seen_stop', cast(seen_cell AS SIGNED) as 'seen_cell',atk_iv,def_iv,sta_iv 
   FROM rdmdb.pokemon_history
-  WHERE
-  least(ifnull(first_encounter,seen_wild),seen_wild) >= @period and
-  least(ifnull(first_encounter,seen_wild),seen_wild) < @stop);
-
+  WHERE seen_wild >= @period and seen_wild < @stop
+  UNION ALL
+  SELECT location, cast(first_encounter AS SIGNED) as 'first_encounter', cast(expire_timestamp AS SIGNED) as 'expire_timestamp', expire_timestamp_verified, stats_reset, cast(last_encounter AS SIGNED) as 'last_encounter', cast(seen_wild AS SIGNED) as 'seen_wild', cast(seen_stop AS SIGNED) as 'seen_stop', cast(seen_cell AS SIGNED) as 'seen_cell',atk_iv,def_iv,sta_iv
+  FROM rdmdb.pokemon_history
+  WHERE seen_wild is NULL and first_encounter >= @period and first_encounter < @stop
+  );
 -- get areas
 SET @row_number = 0;
 DROP TEMPORARY TABLE IF EXISTS rdmstats.areas;
@@ -45,7 +47,7 @@ BEGIN
   SET @current = 1;
 
   WHILE @current <= @max DO
-    INSERT IGNORE INTO rdmstats.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,verifiedReEnc,verifiedWild,encSecLeft,wildSecLeft,resetMon,re_encSecLeft,numWiEnc,numSpWi,numSpEnc,numCeWi,numCeEnc,secWiEnc,secSpWi,secSpEnc,secCeWi,secCeEnc,iv100)
+    INSERT IGNORE INTO rdmstats.stats_mon_area (datetime,rpl,area,fence,totMon,ivMon,verifiedEnc,verifiedReEnc,verifiedWild,encSecLeft,wildSecLeft,resetMon,re_encSecLeft,encTthMax5,encTth5to10,encTth10to15,encTth15to20,encTth20to25,encTth25to30,encTth30to35,encTth35to40,encTth40to45,encTth45to50,encTth50to55,encTthMin55,numWiEnc,numSpWi,numSpEnc,numCeWi,numCeEnc,secWiEnc,secSpWi,secSpEnc,secCeWi,secCeEnc,iv100)
     SELECT
     from_unixtime(@period) as 'period',
     15 as 'rpl',
@@ -60,6 +62,19 @@ BEGIN
     sum(case when seen_wild is not NULL and expire_timestamp_verified = 1 then expire_timestamp-seen_wild end) as 'wildSecLeft',
     ifnull(sum(case when stats_reset is not NULL then 1 end),0) as 'resetMon',
     ifnull(sum(case when stats_reset is not NULL and last_encounter >= stats_reset and expire_timestamp_verified = 1 then expire_timestamp-last_encounter end),0) as 're_encSecLeft',
+
+    ifnull(sum(case when expire_timestamp-first_encounter < 5*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTthMax5',
+    ifnull(sum(case when expire_timestamp-first_encounter < 10*60 and expire_timestamp-first_encounter >= 5*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth5to10',
+    ifnull(sum(case when expire_timestamp-first_encounter < 15*60 and expire_timestamp-first_encounter >= 10*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth10to15',
+    ifnull(sum(case when expire_timestamp-first_encounter < 20*60 and expire_timestamp-first_encounter >= 15*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth15to20',
+    ifnull(sum(case when expire_timestamp-first_encounter < 25*60 and expire_timestamp-first_encounter >= 20*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth20to25',
+    ifnull(sum(case when expire_timestamp-first_encounter < 30*60 and expire_timestamp-first_encounter >= 25*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth25to30',
+    ifnull(sum(case when expire_timestamp-first_encounter < 35*60 and expire_timestamp-first_encounter >= 30*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth30to35',
+    ifnull(sum(case when expire_timestamp-first_encounter < 40*60 and expire_timestamp-first_encounter >= 35*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth35to40',
+    ifnull(sum(case when expire_timestamp-first_encounter < 45*60 and expire_timestamp-first_encounter >= 40*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth40to45',
+    ifnull(sum(case when expire_timestamp-first_encounter < 50*60 and expire_timestamp-first_encounter >= 45*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth45to50',
+    ifnull(sum(case when expire_timestamp-first_encounter < 55*60 and expire_timestamp-first_encounter >= 50*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTth50to55',
+    ifnull(sum(case when expire_timestamp-first_encounter >= 55*60 and expire_timestamp_verified = 1 then 1 end),0) as 'encTthMin55',
 
     ifnull(sum(case when seen_wild is not NULL and first_encounter is not NULL and first_encounter - seen_wild > 1 then 1 end),0) as 'numWiEnc',
     ifnull(sum(case when seen_stop is not NULL and seen_wild is not NULL and seen_wild - seen_stop > 1 then 1 end),0) as 'numSpWi',
