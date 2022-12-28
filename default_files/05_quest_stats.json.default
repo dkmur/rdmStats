@@ -2,7 +2,7 @@
   "__inputs": [
     {
       "name": "DS_RDM_STATS",
-      "label": "RDM_Stats",
+      "label": "RDM_stats",
       "description": "",
       "type": "datasource",
       "pluginId": "mysql",

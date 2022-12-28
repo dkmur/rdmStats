@@ -2,7 +2,7 @@
   "__inputs": [
     {
       "name": "DS_RDM_STATS",
-      "label": "RDM_Stats",
+      "label": "RDM_stats",
       "description": "",
       "type": "datasource",
       "pluginId": "mysql",
@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.3.1"
+      "version": "9.3.2"
     },
     {
       "type": "datasource",
@@ -1241,7 +1241,7 @@
         "type": "mysql",
         "uid": "${DS_RDM_STATS}"
       },
-      "description": "",
+      "description": "Assumes despawntime left < 30 minutes => 30m spawnpoint",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1267,17 +1267,18 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "always",
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "percent"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
             }
           },
           "mappings": [],
+          "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1291,283 +1292,106 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "percentunit"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "25_to_30"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "20_to_25"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "15_to_20"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "10_to_15"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "5_to_10"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "below_5"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
         "w": 12,
         "x": 0,
         "y": 36
-      },
-      "id": 32,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "8.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
-          },
-          "editorMode": "code",
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT  \n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(encTthMax5) AS \"below_5\",\n  sum(encTth5to10) AS \"5_to_10\",\n  sum(encTth10to15) AS \"10_to_15\",\n  sum(encTth15to20) AS \"15_to_20\",\n  sum(encTth20to25) AS \"20_to_25\",\n  sum(encTth25to30) AS \"25_to_30\",\n  sum(encTth30to35) AS \"30_to_35\",\n  sum(encTth35to40) AS \"35_to_40\",\n  sum(encTth40to45) AS \"40_to_45\",\n  sum(encTth45to50) AS \"45_to_50\",\n  sum(encTth50to55) AS \"50_to_55\",\n  sum(encTthmin55) AS \"over_55\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "encounter_id"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          },
-          "table": "pokemon_history",
-          "timeColumn": "disappear_time",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Despawn minutes left details",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "percent"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 12,
-        "y": 36
-      },
-      "id": 33,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "multi",
-          "sort": "none"
-        }
-      },
-      "pluginVersion": "8.4.3",
-      "targets": [
-        {
-          "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
-          },
-          "editorMode": "code",
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT  \n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30) AS \"30m spawnpoint\",\n  sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55) AS \"60m spawnpoint\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "encounter_id"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          },
-          "table": "pokemon_history",
-          "timeColumn": "disappear_time",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        }
-      ],
-      "title": "Spawnpoint type (not accurate)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
-      },
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "bars",
-            "fillOpacity": 100,
-            "gradientMode": "opacity",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "never",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "percent"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 12,
-        "x": 0,
-        "y": 45
       },
       "id": 34,
       "options": {
@@ -1594,7 +1418,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT  \n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(encTthMax5) AS \"below_5\",\n  sum(encTth5to10) AS \"5_to_10\",\n  sum(encTth10to15) AS \"10_to_15\",\n  sum(encTth15to20) AS \"15_to_20\",\n  sum(encTth20to25) AS \"20_to_25\",\n  sum(encTth25to30) AS \"25_to_30\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "rawSql": "SELECT  \n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(encTth25to30)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"25_to_30\",\n  sum(encTth20to25)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"20_to_25\",\n  sum(encTth15to20)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"15_to_20\",\n  sum(encTth10to15)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"10_to_15\",\n  sum(encTth5to10)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"5_to_10\",\n  sum(encTthMax5)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"below_5\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -1635,7 +1459,7 @@
           ]
         }
       ],
-      "title": "Despawn minutes left details 30m (not accurate)",
+      "title": "Despawn minutes left details 30m",
       "type": "timeseries"
     },
     {
@@ -1643,7 +1467,7 @@
         "type": "mysql",
         "uid": "${DS_RDM_STATS}"
       },
-      "description": "",
+      "description": "Assumes despawntime left < 30 minutes => 30m spawnpoint",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1669,17 +1493,18 @@
             "scaleDistribution": {
               "type": "linear"
             },
-            "showPoints": "never",
+            "showPoints": "always",
             "spanNulls": false,
             "stacking": {
               "group": "A",
-              "mode": "percent"
+              "mode": "normal"
             },
             "thresholdsStyle": {
               "mode": "off"
             }
           },
           "mappings": [],
+          "max": 1,
           "thresholds": {
             "mode": "absolute",
             "steps": [
@@ -1693,15 +1518,106 @@
               }
             ]
           },
-          "unit": "short"
+          "unit": "percentunit"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "over_55"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "50_to_55"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "45_to_50"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-yellow",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "40_to_45"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "35_to_40"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "30_to_35"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 9,
         "w": 12,
         "x": 12,
-        "y": 45
+        "y": 36
       },
       "id": 35,
       "options": {
@@ -1728,7 +1644,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT  \n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(encTth30to35) AS \"30_to_35\",\n  sum(encTth35to40) AS \"35_to_40\",\n  sum(encTth40to45) AS \"40_to_45\",\n  sum(encTth45to50) AS \"45_to_50\",\n  sum(encTth50to55) AS \"50_to_55\",\n  sum(encTthmin55) AS \"over_55\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "rawSql": "SELECT  \n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(encTthmin55)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"over_55\",\n  sum(encTth50to55)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"50_to_55\",\n  sum(encTth45to50)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"45_to_50\",\n  sum(encTth40to45)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"40_to_45\",\n  sum(encTth35to40)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"35_to_40\",\n  sum(encTth30to35)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"30_to_35\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -1769,7 +1685,169 @@
           ]
         }
       ],
-      "title": "Despawn minutes left details 60m (not accurate)",
+      "title": "Despawn minutes left details 60m",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "mysql",
+        "uid": "${DS_RDM_STATS}"
+      },
+      "description": "Assumes despawntime left < 30 minutes => 30m spawnpoint",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 100,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "always",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "30m spawnpoint"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "60m spawnpoint"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 45
+      },
+      "id": 33,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "8.4.3",
+      "targets": [
+        {
+          "datasource": {
+            "type": "mysql",
+            "uid": "${DS_RDM_STATS}"
+          },
+          "editorMode": "code",
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT  \n  $__timeGroup(Datetime,$__interval) as 'time',\n  (sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30))/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)+sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"30m spawnpoint\",\n  (sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55))/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)+sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"60m spawnpoint\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "encounter_id"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
+          "table": "pokemon_history",
+          "timeColumn": "disappear_time",
+          "timeColumnType": "timestamp",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "title": "Spawnpoint type",
       "type": "timeseries"
     }
   ],
@@ -1849,7 +1927,7 @@
     ]
   },
   "time": {
-    "from": "now-24h",
+    "from": "now-12h",
     "to": "now"
   },
   "timepicker": {
@@ -1869,6 +1947,6 @@
   "timezone": "",
   "title": "03. Area stats",
   "uid": "KY-d_hOMd",
-  "version": 4,
+  "version": 2,
   "weekStart": ""
 }
