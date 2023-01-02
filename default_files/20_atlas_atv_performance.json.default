@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.2.6"
+      "version": "9.3.2"
     },
     {
       "type": "datasource",
@@ -171,6 +171,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -184,7 +185,7 @@
           "hide": false,
           "metricColumn": "cpuSys",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuSys AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuSys AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -202,6 +203,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -315,6 +333,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -328,7 +347,7 @@
           "hide": false,
           "metricColumn": "cpuUser",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuUser AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuUser AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -346,6 +365,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -459,6 +495,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -472,7 +509,7 @@
           "hide": false,
           "metricColumn": "cpuPogoPct",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuPogoPct AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV)\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuPogoPct AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV)\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -490,6 +527,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -602,6 +656,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -615,7 +670,7 @@
           "hide": false,
           "metricColumn": "cpuVMpct",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuApct AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuApct AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -633,6 +688,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -745,6 +817,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -758,7 +831,7 @@
           "hide": false,
           "metricColumn": "cpuL5",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuL5 AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuL5 AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -776,6 +849,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -888,6 +978,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -901,7 +992,7 @@
           "hide": false,
           "metricColumn": "cpuL10",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuL10 AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuL10 AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -919,6 +1010,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -1031,6 +1139,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -1044,7 +1153,7 @@
           "hide": false,
           "metricColumn": "cpuLavg",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuL15 AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  cpuL15 AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -1062,6 +1171,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -1204,6 +1330,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -1217,7 +1344,7 @@
           "hide": false,
           "metricColumn": "temperature",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  temperature AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  temperature AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -1235,6 +1362,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -1373,6 +1517,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -1386,7 +1531,7 @@
           "hide": false,
           "metricColumn": "memFree",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  memFree AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  memFree AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -1404,6 +1549,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -1516,6 +1678,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -1529,7 +1692,7 @@
           "hide": false,
           "metricColumn": "memPogo",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  memPogo AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  memPogo AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -1547,6 +1710,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -1659,6 +1839,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -1672,7 +1853,7 @@
           "hide": false,
           "metricColumn": "memVM",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  memAtlas AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  memAtlas AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -1690,6 +1871,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -1804,6 +2002,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -1817,7 +2016,7 @@
           "hide": false,
           "metricColumn": "memVM",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  diskSysPct AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  diskSysPct AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -1835,6 +2034,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -1872,6 +2088,8 @@
             "mode": "palette-classic"
           },
           "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -1947,6 +2165,7 @@
             "type": "mysql",
             "uid": "${DS_ACONF}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [
             {
@@ -1960,7 +2179,7 @@
           "hide": false,
           "metricColumn": "memVM",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  diskDataPct AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\nGROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
+          "rawSql": "SELECT\n  $__timeGroupAlias(timestamp,$__interval,NULL),\n  diskDataPct AS metric,\n  deviceName AS \"deviceName\"\nFROM ATVstats\nWHERE\n  $__timeFilter(timestamp) AND\n  deviceName IN ($ATV) AND\n  RPL = $RPL\n-- GROUP BY 1,2\nORDER BY $__timeGroup(timestamp,$__interval,NULL)",
           "refId": "A",
           "select": [
             [
@@ -1978,6 +2197,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "ATVstats",
           "timeColumn": "timestamp",
           "timeColumnType": "timestamp",
@@ -2038,7 +2274,7 @@
         "definition": "select distinct(RPL) from ATVstats;",
         "hide": 0,
         "includeAll": false,
-        "multi": true,
+        "multi": false,
         "name": "RPL",
         "options": [],
         "query": "select distinct(RPL) from ATVstats;",
@@ -2058,6 +2294,6 @@
   "timezone": "",
   "title": "20. Atlas atv performance",
   "uid": "aAgD-kUnz",
-  "version": 6,
+  "version": 2,
   "weekStart": ""
 }
