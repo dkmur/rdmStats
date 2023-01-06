@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.2.1"
+      "version": "9.2.6"
     },
     {
       "type": "datasource",
@@ -197,11 +197,12 @@
             "type": "mysql",
             "uid": "${DS_RDM_STATS}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(spawnpoints) AS \"Spawnpoints\"\nFROM stats_spawnpoint\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(spawnpoints) AS \"Spawnpoints\",\n  sum(verified) AS \"#verified\",\n  100*sum(verified)/sum(spawnpoints) AS \"%verified\",\n  sum(seen) AS \"#Spawnpoints seen\",\n  sum(1d) AS \"#Spawnpoints unseen last 24 hours\",\n  sum(3d) AS \"#Spawnpoints unseen last 72 hours\",\n  sum(5d) AS \"#Spawnpoints unseen last 120 hours\",\n  sum(7d) AS \"#Spawnpoints unseen last 168 hours\",\n  sum(14d) AS \"#Spawnpoints unseen last 336 hours\"\nFROM stats_spawnpoint\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -245,6 +246,23 @@
               }
             ]
           ],
+          "sql": {
+            "columns": [
+              {
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
+              }
+            ],
+            "limit": 50
+          },
           "table": "stats_area",
           "timeColumn": "Datetime",
           "timeColumnType": "datetime",
@@ -258,12 +276,23 @@
         }
       ],
       "title": "DB spawnpoints",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [],
+              "pattern": "Time|Spawnpoints"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -418,76 +447,30 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(verified) AS \"#verified\",\n  100*sum(verified)/sum(spawnpoints) AS \"%verified\"\nFROM stats_spawnpoint\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "Mons_all"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "sum"
-                ],
-                "type": "aggregate"
-              },
-              {
-                "params": [
-                  "Mons_all"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "MonsIV"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "sum"
-                ],
-                "type": "aggregate"
-              },
-              {
-                "params": [
-                  "MonsIV"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "table": "stats_area",
-          "timeColumn": "Datetime",
-          "timeColumnType": "datetime",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "Verified spawnpoints",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "Time|(#|%)verified"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -634,76 +617,30 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(seen) AS \"#Spawnpoints seen\"\nFROM stats_spawnpoint\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "Mons_all"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "sum"
-                ],
-                "type": "aggregate"
-              },
-              {
-                "params": [
-                  "Mons_all"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "MonsIV"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "sum"
-                ],
-                "type": "aggregate"
-              },
-              {
-                "params": [
-                  "MonsIV"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "table": "stats_area",
-          "timeColumn": "Datetime",
-          "timeColumnType": "datetime",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "Spawnpoints seen",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "Time|#Spawnpoints seen"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -865,70 +802,24 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(1d) AS \"#Spawnpoints unseen last 24 hours\",\n  sum(3d) AS \"#Spawnpoints unseen last 72 hours\",\n  sum(5d) AS \"#Spawnpoints unseen last 120 hours\",\n  sum(7d) AS \"#Spawnpoints unseen last 168 hours\",\n  sum(14d) AS \"#Spawnpoints unseen last 336 hours\"\nFROM stats_spawnpoint\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "Mons_all"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "sum"
-                ],
-                "type": "aggregate"
-              },
-              {
-                "params": [
-                  "Mons_all"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "MonsIV"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "sum"
-                ],
-                "type": "aggregate"
-              },
-              {
-                "params": [
-                  "MonsIV"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "table": "stats_area",
-          "timeColumn": "Datetime",
-          "timeColumnType": "datetime",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "DB spawnpoints unseen",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "pattern": "Time|\\#Spawnpoints unseen last \\d* hours"
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     }
   ],
@@ -1028,6 +919,6 @@
   "timezone": "",
   "title": "04. Spawnpoint stats",
   "uid": "KY-d_hOMe",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
