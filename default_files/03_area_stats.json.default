@@ -15,7 +15,7 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "9.3.2"
+      "version": "9.2.6"
     },
     {
       "type": "datasource",
@@ -197,12 +197,13 @@
             "type": "mysql",
             "uid": "${DS_RDM_STATS}"
           },
+          "editorMode": "code",
           "format": "time_series",
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(totMon) AS \"Mons_all\",\n  sum(ivMon) AS \"MonsIV\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
+          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(totMon) AS \"Mons_all\",\n  sum(ivMon) AS \"MonsIV\",\n  100*sum(ivMon)/sum(totMon) AS '% IV',\n  (sum(wildSecLeft)/sum(verifiedWild))/60 AS \"verified wild\",\n  (sum(encSecLeft)/sum(verifiedEnc))/60 AS \"verified encounters\",\n  sum(resetMon) AS \"#Reset mon stats\",\n  sum(verifiedReEnc) AS \"#Re-encounter\",\n  (sum(re_encSecLeft)/sum(verifiedReEnc))/60 AS \"Despawn Minutes Left (re-encounter)\",\n  sum(numWiEnc) AS \"#mons\",\n  sum(secWiEnc)/sum(numWiEnc) AS \"time (s)\",\n  sum(numSpWi) AS \"#mons stop=>wild\",\n  sum(numSpEnc) AS \"#mons stop=>encounter\",\n  sum(secSpWi)/sum(numSpWi) AS \"stop to wild time (s)\",\n  sum(secSpEnc)/sum(numSpEnc) AS \"stop to encounter time (s)\",\n  sum(numCeWi) AS \"#mons cell=>wild\",\n  sum(numCeEnc) AS \"#mons cell=>encounter\",\n  sum(secCeWi)/sum(numCeWi) AS \"cell=>wild time (s)\",\n  sum(secCeEnc)/sum(numCeEnc) AS \"cell=>encounter time (s)\",\n  sum(encTth25to30)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"25_to_30\",\n  sum(encTth20to25)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"20_to_25\",\n  sum(encTth15to20)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"15_to_20\",\n  sum(encTth10to15)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"10_to_15\",\n  sum(encTth5to10)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"5_to_10\",\n  sum(encTthMax5)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"below_5\",\n  sum(encTthmin55)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"over_55\",\n  sum(encTth50to55)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"50_to_55\",\n  sum(encTth45to50)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"45_to_50\",\n  sum(encTth40to45)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"40_to_45\",\n  sum(encTth35to40)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"35_to_40\",\n  sum(encTth30to35)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"30_to_35\",\n  (sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30))/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)+sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"30m spawnpoint\",\n  (sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55))/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)+sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"60m spawnpoint\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "refId": "Query everything",
           "select": [
             [
               {
@@ -245,38 +246,22 @@
               }
             ]
           ],
-          "table": "stats_area",
-          "timeColumn": "Datetime",
-          "timeColumnType": "datetime",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
-        },
-        {
-          "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
-          },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(Datetime,$__interval),\n  100*sum(ivMon)/sum(totMon) AS '% IV'\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "B",
-          "select": [
-            [
+          "sql": {
+            "columns": [
               {
-                "params": [
-                  "AvgMinutesLeft"
-                ],
-                "type": "column"
+                "parameters": [],
+                "type": "function"
+              }
+            ],
+            "groupBy": [
+              {
+                "property": {
+                  "type": "string"
+                },
+                "type": "groupBy"
               }
             ]
-          ],
+          },
           "table": "stats_area",
           "timeColumn": "Datetime",
           "timeColumnType": "datetime",
@@ -290,12 +275,27 @@
         }
       ],
       "title": "Mons scanned",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "Mons_all",
+                "MonsIV",
+                "% IV"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -404,67 +404,34 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "format": "time_series",
-          "group": [
-            {
-              "params": [
-                "$__interval",
-                "none"
-              ],
-              "type": "time"
-            }
-          ],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(Datetime,$__interval),\n  (sum(wildSecLeft)/sum(verifiedWild))/60 AS \"verified wild\",\n  (sum(encSecLeft)/sum(verifiedEnc))/60 AS \"verified encounters\"\nFROM stats_mon_area\nWHERE\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "B",
-          "select": [
-            [
-              {
-                "params": [
-                  "AvgMinutesLeft"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "avg"
-                ],
-                "type": "aggregate"
-              },
-              {
-                "params": [
-                  "AvgMinutesLeft"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "table": "pogodb.stats_area",
-          "timeColumn": "Datetime",
-          "where": [
-            {
-              "name": "",
-              "params": [
-                "RPL",
-                "=",
-                "'$RPL'"
-              ],
-              "type": "expression"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "Despawn minutes left",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "verified wild",
+                "verified encounters"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -555,76 +522,36 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(resetMon) AS \"#Reset mon stats\",\n  sum(verifiedReEnc) AS \"#Re-encounter\",\n  (sum(re_encSecLeft)/sum(verifiedReEnc))/60 AS \"Despawn Minutes Left (re-encounter)\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
+          "panelId": 2,
           "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "Mons_all"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "sum"
-                ],
-                "type": "aggregate"
-              },
-              {
-                "params": [
-                  "Mons_all"
-                ],
-                "type": "alias"
-              }
-            ],
-            [
-              {
-                "params": [
-                  "MonsIV"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "sum"
-                ],
-                "type": "aggregate"
-              },
-              {
-                "params": [
-                  "MonsIV"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "table": "stats_area",
-          "timeColumn": "Datetime",
-          "timeColumnType": "datetime",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "withTransforms": false
         }
       ],
       "title": "Stats reset",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "#Reset mon stats",
+                "#Re-encounter",
+                "Despawn Minutes Left (re-encounter)"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -715,44 +642,34 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(datetime,$__interval),\n  sum(numWiEnc) AS \"#mons\",\n  sum(secWiEnc)/sum(numWiEnc) AS \"time (s)\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area)\nGROUP BY 1\nORDER BY $__timeGroup(datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "encounter_id"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "pokemon_history",
-          "timeColumn": "disappear_time",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "Wild => Encounter",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "#mons",
+                "time (s)"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -843,44 +760,34 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(datetime,$__interval),\n  sum(numSpWi) AS \"#mons stop=>wild\",\n  sum(numSpEnc) AS \"#mons stop=>encounter\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area)\nGROUP BY 1\nORDER BY $__timeGroup(datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "encounter_id"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "pokemon_history",
-          "timeColumn": "disappear_time",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "Nearby stop mons",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "#mons stop=>wild",
+                "#mons stop=>encounter"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -971,44 +878,34 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(datetime,$__interval),\n  sum(secSpWi)/sum(numSpWi) AS \"stop to wild time (s)\",\n  sum(secSpEnc)/sum(numSpEnc) AS \"stop to encounter time (s)\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area)\nGROUP BY 1\nORDER BY $__timeGroup(datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "encounter_id"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "pokemon_history",
-          "timeColumn": "disappear_time",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "Nearby stop time",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "stop to wild time (s)",
+                "stop to encounter time (s)"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "description": "",
       "fieldConfig": {
@@ -1087,44 +984,34 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(datetime,$__interval),\n  sum(numCeWi) AS \"#mons cell=>wild\",\n  sum(numCeEnc) AS \"#mons cell=>encounter\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area)\nGROUP BY 1\nORDER BY $__timeGroup(datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "encounter_id"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "pokemon_history",
-          "timeColumn": "disappear_time",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "Nearby cell mons",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "#mons cell=>wild",
+                "#mons cell=>encounter"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "fieldConfig": {
         "defaults": {
@@ -1202,44 +1089,34 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  $__timeGroupAlias(datetime,$__interval),\n  sum(secCeWi)/sum(numCeWi) AS \"cell=>wild time (s)\",\n  sum(secCeEnc)/sum(numCeEnc) AS \"cell=>encounter time (s)\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area)\nGROUP BY 1\nORDER BY $__timeGroup(datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "encounter_id"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "table": "pokemon_history",
-          "timeColumn": "disappear_time",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "Nearby cell time",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "cell=>wild time (s)",
+                "cell=>encounter time (s)"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "description": "Assumes despawntime left < 30 minutes => 30m spawnpoint",
       "fieldConfig": {
@@ -1410,62 +1287,38 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "editorMode": "code",
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT  \n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(encTth25to30)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"25_to_30\",\n  sum(encTth20to25)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"20_to_25\",\n  sum(encTth15to20)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"15_to_20\",\n  sum(encTth10to15)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"10_to_15\",\n  sum(encTth5to10)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"5_to_10\",\n  sum(encTthMax5)/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)) AS \"below_5\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "encounter_id"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          },
-          "table": "pokemon_history",
-          "timeColumn": "disappear_time",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "Despawn minutes left details 30m",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "25_to_30",
+                "20_to_25",
+                "15_to_20",
+                "10_to_15",
+                "5_to_10",
+                "below_5"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "description": "Assumes despawntime left < 30 minutes => 30m spawnpoint",
       "fieldConfig": {
@@ -1636,62 +1489,38 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "editorMode": "code",
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT  \n  $__timeGroup(Datetime,$__interval) as 'time',\n  sum(encTthmin55)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"over_55\",\n  sum(encTth50to55)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"50_to_55\",\n  sum(encTth45to50)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"45_to_50\",\n  sum(encTth40to45)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"40_to_45\",\n  sum(encTth35to40)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"35_to_40\",\n  sum(encTth30to35)/(sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"30_to_35\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "encounter_id"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          },
-          "table": "pokemon_history",
-          "timeColumn": "disappear_time",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "Despawn minutes left details 60m",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "over_55",
+                "50_to_55",
+                "45_to_50",
+                "40_to_45",
+                "35_to_40",
+                "30_to_35",
+                "Time"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     },
     {
       "datasource": {
-        "type": "mysql",
-        "uid": "${DS_RDM_STATS}"
+        "type": "datasource",
+        "uid": "-- Dashboard --"
       },
       "description": "Assumes despawntime left < 30 minutes => 30m spawnpoint",
       "fieldConfig": {
@@ -1798,56 +1627,28 @@
       "targets": [
         {
           "datasource": {
-            "type": "mysql",
-            "uid": "${DS_RDM_STATS}"
+            "type": "datasource",
+            "uid": "-- Dashboard --"
           },
-          "editorMode": "code",
-          "format": "time_series",
-          "group": [],
-          "metricColumn": "none",
-          "rawQuery": true,
-          "rawSql": "SELECT  \n  $__timeGroup(Datetime,$__interval) as 'time',\n  (sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30))/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)+sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"30m spawnpoint\",\n  (sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55))/(sum(encTthMax5)+sum(encTth5to10)+sum(encTth10to15)+sum(encTth15to20)+sum(encTth20to25)+sum(encTth25to30)+sum(encTth30to35)+sum(encTth35to40)+sum(encTth40to45)+sum(encTth45to50)+sum(encTth50to55)+sum(encTthmin55)) AS \"60m spawnpoint\"\nFROM stats_mon_area\nWHERE\n  $__timeFilter(datetime) and\n  rpl = '$rpl' and\n  area in ($area) and\n  fence in ($fence)\nGROUP BY 1\nORDER BY $__timeGroup(Datetime,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "encounter_id"
-                ],
-                "type": "column"
-              }
-            ]
-          ],
-          "sql": {
-            "columns": [
-              {
-                "parameters": [],
-                "type": "function"
-              }
-            ],
-            "groupBy": [
-              {
-                "property": {
-                  "type": "string"
-                },
-                "type": "groupBy"
-              }
-            ],
-            "limit": 50
-          },
-          "table": "pokemon_history",
-          "timeColumn": "disappear_time",
-          "timeColumnType": "timestamp",
-          "where": [
-            {
-              "name": "$__timeFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "panelId": 2,
+          "refId": "A"
         }
       ],
       "title": "Spawnpoint type",
+      "transformations": [
+        {
+          "id": "filterFieldsByName",
+          "options": {
+            "include": {
+              "names": [
+                "Time",
+                "60m spawnpoint",
+                "30m spawnpoint"
+              ]
+            }
+          }
+        }
+      ],
       "type": "timeseries"
     }
   ],
@@ -1947,6 +1748,6 @@
   "timezone": "",
   "title": "03. Area stats",
   "uid": "KY-d_hOMd",
-  "version": 2,
+  "version": 3,
   "weekStart": ""
 }
